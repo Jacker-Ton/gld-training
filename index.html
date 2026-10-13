@@ -8,6 +8,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--bg)}
 body{margin:0;color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .page{max-width:440px;margin:0 auto;padding-inline:16px;padding-block:0 40px;background:linear-gradient(180deg,var(--bg2),var(--bg) 340px)}
@@ -104,6 +105,22 @@ input[aria-invalid="true"]{border-color:var(--warn);box-shadow:0 0 0 1px var(--w
 .pay dd{margin:0 0 4px;word-break:break-word}
 .amount{font-size:24px;font-weight:700}
 .copy{font:600 12px var(--f);border:1px solid var(--line);background:#fff;padding:2px 8px;margin-left:6px;cursor:pointer}
+/* modal thanh toán */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(23,18,31,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.sheet{width:100%;max-width:440px;max-height:94vh;overflow:auto;background:var(--bg);border:1px solid var(--line);border-bottom:0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;animation:up .25s ease-out}
+@media (min-width:520px){.modal{align-items:center}.sheet{border-bottom:1px solid var(--line)}}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+#payBody{display:grid;gap:14px}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.x{font:400 28px/1 var(--f);background:none;border:1px solid var(--line);width:36px;height:36px;cursor:pointer;color:var(--ink)}
+.qrbig{width:212px;height:212px;margin:0 auto;border:1px solid var(--line);background:#fff;padding:8px;display:grid;place-items:center}
+.qrbig img,.qrbig canvas{width:194px!important;height:194px!important;display:block}
+.paylist{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:15px;align-items:baseline}
+.paylist dt{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.paylist dd{margin:0;word-break:break-word}
+.sess{display:grid;gap:4px;font-size:15px;border:1px solid var(--line);background:var(--card);padding:10px 12px}
+.pending{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);background:#FFF8E6;padding:10px 12px;font-size:14.5px}
+.pending button{font:600 13px var(--f);border:1px solid var(--line);background:var(--ink);color:var(--gold3);padding:6px 10px;cursor:pointer;white-space:nowrap}
 /* done */
 .done{padding:16px;display:grid;gap:10px;background:var(--ink);color:#EDE4F7;border:1px solid var(--ink)}
 .done h3{color:var(--gold3)}
@@ -177,7 +194,7 @@ fill="#17121F" stroke="none">
     <p class="sub">Từ một trợ lý AI đến một bộ máy agent biết giao việc, chấm điểm và hành động thật.</p>
   </div>
   <p class="inviter" style="padding-block:6px 18px">Golive Dev trân trọng kính mời Anh/Chị tham dự khoá thực hành do <b style="font-style:normal">JACK TON</b> trực tiếp hướng dẫn.</p>
-  <a class="cta" href="#book">Chọn lịch &amp; giữ chỗ</a>
+  <a class="cta" href="#book">Chọn lịch &amp; đăng ký</a>
   <section style="margin-top:26px">
     <div class="facts">
       <div><b class="gold">T3·T5·T7</b><span>mỗi tuần một khoá mới</span></div>
@@ -227,8 +244,8 @@ fill="#17121F" stroke="none">
     <div class="box" style="padding:14px 16px"><ul style="margin:0;padding-left:18px;display:grid;gap:6px;color:var(--ink2);font-size:15.5px">
       <li>Mỗi tài khoản đăng ký được hỗ trợ trong <b>tháng của khoá đó</b>; cả 3 buổi chọn trong cùng tháng.</li>
       <li>Học viên đã từng đăng ký vẫn có thể đăng ký học cùng khoá mới trong tháng.</li>
-      <li>Tối đa <b>10 học viên mỗi buổi</b>. Buổi đủ chỗ sẽ khoá trên lịch, ưu tiên thành viên bỏ lỡ buổi 1 trong 3 buổi học trong tháng.</li>
-      <li>Học phí buổi 2 – 3 thu trước <b>400.000đ/khoá</b>; buổi 1 miễn phí.</li>
+      <li>Tối đa <b>10 học viên mỗi buổi</b>. Chỗ chỉ được tính khi học viên đã chuyển khoản thành công; buổi đủ chỗ sẽ khoá trên lịch, ưu tiên thành viên bỏ lỡ buổi 1 trong 3 buổi học trong tháng.</li>
+      <li>Học phí buổi 2 – 3 thu trước <b>400.000đ/khoá</b>; buổi 1 miễn phí. Lịch học chỉ được xác nhận khi Golive Dev nhận đủ học phí; email xác nhận kèm link phòng học gửi sau khi đối soát. Đăng ký chưa thanh toán sau <b>24 giờ</b> sẽ tự huỷ.</li>
       <li>Tư vấn cá nhân ngoài giờ học: liên hệ JACK TON qua email xác nhận.</li>
     </ul></div>
   </section>
@@ -243,21 +260,16 @@ fill="#17121F" stroke="none">
       <div class="hp" aria-hidden="true"><label for="fWeb">Website<input id="fWeb" name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="err" id="err" role="alert"></p>
       <button class="cta" id="submit" type="submit">Xác nhận đặt lịch</button>
+      <p class="hint">Bấm xác nhận để mở bước thanh toán: quét QR, chuyển 400.000đ với nội dung có sẵn mã khoá và ngày giờ học.</p>
     </form>
   </section>
-  <section>
-    <span class="cap">Bước 3 · Học phí 400.000đ/khoá</span>
-    <div class="box pay">
-      <div class="qr" id="qr"><span class="empty">Mã QR hiện khi điền số điện thoại</span></div>
-      <dl>
-        <dt>Số tiền</dt><dd class="amount gold" id="amt">400.000đ</dd>
-        <dt>Nội dung</dt><dd><span id="memo">GLD K.. …</span><button type="button" class="copy" id="cpMemo">Chép</button></dd>
-        <dt>Tài khoản</dt><dd id="acct">—</dd>
-      </dl>
-    </div>
-    <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung chuyển khoản đã điền sẵn. Buổi 1 miễn phí, không cần chuyển khoản.</p>
-  </section>
   <div id="done" hidden></div>
+  <div class="modal" id="payModal" hidden role="dialog" aria-modal="true" aria-labelledby="payTitle">
+    <div class="sheet">
+      <div class="sheet-h"><span class="cap">Bước 3 · Thanh toán</span><button type="button" class="x" id="payClose" aria-label="Đóng">×</button></div>
+      <div id="payBody"></div>
+    </div>
+  </div>
   <p class="demo" id="demoNote" hidden>Bản xem thử: dữ liệu chỉ lưu trên máy này, chưa gửi Google Sheet và email.</p>
   <footer>
     <svg viewBox="0 0 500 500" width="56" height="56" aria-hidden="true" style="margin-bottom:6px"><use href="#gldLogo"/></svg>
@@ -389,21 +401,56 @@ $("#today").onclick=()=>{view=new Date(now.getFullYear(),now.getMonth(),1);loadS
 $("#clear").onclick=()=>{picks=[];store.set("picks",picks);renderCal()};
 /* ============ VietQR động (EMVCo) ============ */
 const total=CONFIG.FEES.reduce((a,b)=>a+b,0);
-$("#amt").textContent=vnd(total);
 function tlv(id,v){return id+pad(v.length)+v}
 function crc16(s){let c=0xFFFF;for(let i=0;i<s.length;i++){c^=s.charCodeAt(i)<<8;for(let j=0;j<8;j++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF}return c.toString(16).toUpperCase().padStart(4,"0")}
 function vietqr(memo){const acc=tlv("00","A000000727")+tlv("01",tlv("00",CONFIG.BANK.bin)+tlv("01",CONFIG.BANK.account))+tlv("02","QRIBFTTA");
   let p=tlv("00","01")+tlv("01","12")+tlv("38",acc)+tlv("53","704")+tlv("54",String(total))+tlv("58","VN")+tlv("62",tlv("08",memo))+"6304";return p+crc16(p)}
-let paidMemo=null;
-function memoFor(phone){if(paidMemo&&!picks[0])return paidMemo;const p=String(phone||"").replace(/\D/g,"");return "GLD "+(picks[0]?"K"+pad(courseNo(picks[0])):"KHOA")+" "+(p?p.slice(-9):"")}
-function renderPay(){const memo=memoFor($("#fPhone").value);$("#memo").textContent=memo.trim()+(memo.endsWith(" ")?"…":"");
-  $("#acct").textContent=BANK_OK?(CONFIG.BANK.label+" · "+CONFIG.BANK.account+(CONFIG.BANK.name&&!/%%/.test(CONFIG.BANK.name)?" · "+CONFIG.BANK.name:"")):"Đang cập nhật";
-  const box=$("#qr");box.innerHTML="";
-  if(!BANK_OK){box.innerHTML='<span class="empty">Mã QR ngân hàng sẽ hiện tại đây</span>';return}
-  if(!/\d{6,}/.test(memo)){box.innerHTML='<span class="empty">Mã QR hiện khi điền số điện thoại</span>';return}
-  if(window.QRCode)new QRCode(box,{text:vietqr(memo),width:236,height:236,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
-$("#fPhone").addEventListener("input",renderPay);
-$("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText($("#memo").textContent);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
+function renderPay(){}                                     // QR nằm trong popup thanh toán
+let pay=store.get("pay",null);                             // {id,memo,course,dates,fee,name,email,step}
+function qrInto(box,memo){box.innerHTML="";
+  if(!BANK_OK){box.innerHTML='<span class="hint">Mã QR ngân hàng sẽ hiện tại đây</span>';return}
+  if(window.QRCode)new QRCode(box,{text:vietqr(memo),width:400,height:400,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
+function memoLegend(m){const t=m.split(" ");return t.length>=5?`${t[1]} = ${courseLabel(pay.dates[0]).replace(/ \(.*/,"")} · ${t[2].slice(0,2)}/${t[2].slice(2)} = ngày Buổi 1 · ${t[3]} = giờ học · ${t[4]} = 4 số cuối SĐT`:""}
+function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hidden=false;document.body.style.overflow="hidden";
+  const sess=`<div class="sess">${pay.dates.map((k,i)=>`<span><b>Buổi ${i+1}</b> · ${nice(k)} · ${CONFIG.START}–${CONFIG.END}</span>`).join("")}</div>`;
+  if(pay.step==="sent"){
+    body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">Đã ghi nhận chuyển khoản</h3>
+    <p>Mã đăng ký <b>${pay.id}</b> · ${pay.course}</p>${sess}
+    <p class="hint">Golive Dev đang đối soát giao dịch <b>${pay.memo}</b>. Khi tiền về tài khoản, email xác nhận kèm link phòng học Jitsi sẽ gửi tới <b>${esc(pay.email)}</b>. Không thấy trong Hộp thư đến thì kiểm tra mục Spam/Quảng cáo.</p>
+    <div class="sess">${pay.dates.map((k,i)=>`<a href="${gcal(k,i)}" target="_blank" rel="noopener" style="color:var(--gold)">Thêm Buổi ${i+1} vào Google Calendar</a>`).join("")}</div>
+    <button type="button" class="cta" id="payDone">Hoàn tất</button>`;
+    $("#payDone").onclick=closePay;return}
+  body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.course}</h3>${sess}
+  <div class="qrbig" id="qrBig"></div>
+  <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(pay.fee)}</dd>
+    <dt>Nội dung</dt><dd><b id="memo">${pay.memo}</b> <button type="button" class="copy" id="cpMemo">Chép</button></dd>
+    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
+  <p class="hint">${memoLegend(pay.memo)}</p>
+  <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
+  <p class="err" id="payErr" role="alert"></p>
+  <button type="button" class="cta" id="payPaid">Tôi đã chuyển khoản</button>
+  <button type="button" class="cta ghost" id="payLater" style="padding:10px;font-size:13px">Để sau</button>`;
+  qrInto($("#qrBig"),pay.memo);
+  $("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText(pay.memo);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
+  $("#payLater").onclick=closePay;
+  $("#payPaid").onclick=async()=>{const b=$("#payPaid");b.disabled=true;b.textContent="Đang gửi…";let r;
+    try{if(LIVE){r=await(await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify({action:"paid",id:pay.id})})).json()}else r={ok:true,status:"AWAITING_CHECK"}}catch(x){r={ok:false}}
+    if(r.ok){pay.step="sent";store.set("pay",pay);openPay();showPending()}
+    else if(r.error==="CANCELLED"||r.error==="NOT_FOUND"){expire("Đăng ký "+pay.id+" đã quá hạn 24 giờ và bị huỷ. Nếu bạn đã chuyển khoản, vui lòng trả lời email hoặc gọi hotline; hoặc chọn lịch để đăng ký lại.")}
+    else{b.disabled=false;b.textContent="Tôi đã chuyển khoản";$("#payErr").textContent="Chưa gửi được, kiểm tra mạng rồi bấm lại."}}}
+const HOLD=24*3600e3;
+function deadline(){const t=new Date((pay.at||Date.now())+HOLD);return pad(t.getHours())+":"+pad(t.getMinutes())+" "+pad(t.getDate())+"/"+pad(t.getMonth()+1)}
+function expire(msg){pay=null;store.set("pay",null);$("#payModal").hidden=true;document.body.style.overflow="";showPending();$("#err").textContent=msg;$("#book").scrollIntoView({behavior:"smooth"})}
+function closePay(){$("#payModal").hidden=true;document.body.style.overflow="";showPending()}
+function showPending(){const el=$("#done");if(pay&&pay.step!=="sent"&&pay.at&&Date.now()-pay.at>HOLD){pay=null;store.set("pay",null)}if(!pay){el.hidden=true;return}el.hidden=false;
+  el.innerHTML=pay.step==="sent"
+    ?`<section><div class="pending"><span>${pay.course}: đã báo chuyển khoản, đang chờ Golive Dev đối soát.</span><button type="button" id="reopen">Xem</button></div></section>`
+    :`<section><div class="pending"><span>${pay.course}: đã đăng ký, <b>chờ thanh toán</b> trước ${deadline()} để được tính chỗ.</span><button type="button" id="reopen">Thanh toán</button></div></section>`;
+  $("#reopen").onclick=openPay}
+$("#payClose").onclick=closePay;
+$("#payModal").addEventListener("click",e=>{if(e.target.id==="payModal")closePay()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#payModal").hidden)closePay()});
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 /* ============ Đăng ký ============ */
 const fields=["fName","fPhone","fEmail","fCompany"];
 fields.forEach(id=>{const el=$("#"+id);el.value=store.get(id,"");el.addEventListener("input",()=>{store.set(id,el.value);el.removeAttribute("aria-invalid")})});
@@ -422,20 +469,15 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
   try{
     if(LIVE){const r=await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify(data)});res=await r.json()}
     else{const b=store.get("demoBooked",{});for(const d of data.dates)if((b[d]||0)>=CONFIG.MAX){res={ok:false,error:"FULL",date:d};break}
-      if(!res){data.dates.forEach(d=>b[d]=(b[d]||0)+1);store.set("demoBooked",b);res={ok:true,id:"GLD-DEMO",memo:memoFor(data.phone),fee:total,mailed:false,demo:true}}}
+      if(!res){res={ok:true,id:"GLD-DEMO",memo:"GLD K"+pad(courseNo(data.dates[0]))+" "+data.dates[0].slice(8,10)+data.dates[0].slice(5,7)+" "+CONFIG.START.slice(0,2)+"H "+data.phone.slice(-4),fee:total,course:courseLabel(data.dates[0]),demo:true}}}
   }catch(x){res={ok:false,error:"NET"}}
   btn.disabled=false;btn.textContent="Xác nhận đặt lịch";
   if(!res.ok){$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
   done(data,res)});
-function done(d,res){const el=$("#done");el.hidden=false;
-  el.innerHTML=`<section><div class="done"><span class="cap" style="color:#D9B866">Đặt lịch thành công · ${res.id}</span>
-  <h3>Cảm ơn ${d.name.replace(/[<>&]/g,"")}, Golive Dev đã giữ chỗ cho bạn tại ${res.course||courseLabel(d.dates[0])}.</h3>
-  ${d.dates.map((k,i)=>`<p>Buổi ${i+1}: ${nice(k)} · 21:00–22:30 · <a href="${gcal(k,i)}" target="_blank" rel="noopener">Thêm vào Google Calendar</a></p>`).join("")}
-  <p>${res.demo?"Ở bản chính thức, email xác nhận kèm link phòng học sẽ gửi tới "+d.email+".":"Email xác nhận kèm link phòng học Jitsi đã gửi tới <b>"+d.email+"</b>. Nếu chưa thấy trong Hộp thư đến, kiểm tra mục Quảng cáo/Spam và bấm “Không phải spam”."}</p>
-  <p>Học phí khoá (buổi 2 – 3): <b>${vnd(res.fee)}</b>, nội dung chuyển khoản <b>${res.memo}</b>. Quét mã QR ở Bước 3.</p></div></section>`;
-  el.scrollIntoView({behavior:"smooth"});paidMemo=res.memo;picks=[];store.set("picks",picks);renderPay();loadSlots()}
+function done(d,res){pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:Date.now()};
+  store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();openPay()}
 if(picks.some((k,i)=>slot(k)!==i||cutoff(k))){picks=[];store.set("picks",picks)}
 $("#demoNote").hidden=LIVE;
-renderPay();loadSlots();
+showPending();loadSlots();
 </script>
 </body></html>
