@@ -1,0 +1,441 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>GLD Agent Action Invitation</title>
+<meta name="description" content="Thư mời khoá thực hành online 3 buổi: Thiết lập AI Agent System Action — Golive Dev"></head><body><style>
+/* Layout: thư mời dọc khung điện thoại 440px, căn giữa trên desktop; nền tím nhạt, chữ vàng kim, viền đen mảnh */
+:root{
+  --bg:#ECE4F7; --bg2:#E3D8F2; --card:#F6F1FC; --ink:#17121F; --ink2:#4A3F5C;
+  --gold:#7A5A14; --gold2:#B08A35; --gold3:#D9B866; --line:#17121F; --ok:#2F6B4F; --warn:#9C3B2A;
+  --f:"Times New Roman",Times,"Liberation Serif",serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.page{max-width:440px;margin:0 auto;padding-inline:16px;padding-block:0 40px;background:linear-gradient(180deg,var(--bg2),var(--bg) 340px)}
+@media (min-width:520px){body{background:radial-gradient(ellipse at top,#F3EEFA,#DCCFEE)}.page{box-shadow:0 0 0 1px var(--line),0 30px 80px rgba(23,18,31,.18);margin-block:24px}}
+.gold{background:linear-gradient(100deg,#6E500F 0%,#B08A35 28%,#E2C576 48%,#9C7726 70%,#6E500F 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cap{font-size:12.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+h1,h2,h3{font-weight:700;margin:0;text-wrap:balance}
+h2{font-size:27px;line-height:1.15}
+h3{font-size:20px}
+p{margin:0}
+.box{border:1px solid var(--line);background:var(--card);border-radius:2px}
+section{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;padding-block:26px;border-top:1px solid rgba(23,18,31,.18)}
+/* top */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;min-height:40px}
+.logo svg{width:44px;height:44px;display:block;flex:none}
+.logo b{font-size:14px;letter-spacing:.14em}
+.logo small{display:block;font-size:11px;letter-spacing:.2em;color:var(--ink2)}
+/* hero */
+.hero{position:relative;margin-inline:-16px;height:400px;overflow:hidden;border-bottom:1px solid var(--line)}
+#agi{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.hero .fallback{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,#FFF6DA 0,#E6C77A 9%,rgba(230,199,122,0) 22%),radial-gradient(circle at 50% 45%,rgba(255,255,255,.7),rgba(236,228,247,0) 45%),linear-gradient(180deg,#E3D8F2,#ECE4F7)}
+.hero .stamp{position:absolute;right:10px;bottom:8px;font-size:11px;letter-spacing:.12em;color:rgba(23,18,31,.55)}
+.hero .tagline{position:absolute;left:16px;top:16px;right:16px;display:flex;justify-content:space-between}
+.hero .tagline span{font-size:11.5px;letter-spacing:.24em;border:1px solid var(--line);padding:4px 8px;background:rgba(246,241,252,.75)}
+.title{display:grid;gap:10px;padding-block:22px 6px;text-align:center}
+.title h1{font-size:38px;line-height:1.05;letter-spacing:.01em}
+.title .sub{font-size:17px;color:var(--ink2)}
+.inviter{font-style:italic;color:var(--ink2);text-align:center}
+.cta{display:block;width:100%;text-align:center;font:700 16px var(--f);letter-spacing:.18em;text-transform:uppercase;color:var(--gold3);background:var(--ink);border:1px solid var(--ink);padding:15px;cursor:pointer;text-decoration:none}
+.cta:hover{color:#F1DC9C}
+.cta.ghost{background:transparent;color:var(--ink)}
+.cta:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+/* facts */
+.facts{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}
+.facts div{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card)}
+.facts div:nth-child(2n){border-right:0}.facts div:nth-last-child(-n+2){border-bottom:0}
+.facts b{display:block;font-size:22px;line-height:1.1}
+.facts span{font-size:13px;color:var(--ink2)}
+/* sessions */
+.ses{display:grid;grid-template-columns:58px 1fr;border:1px solid var(--line);background:var(--card)}
+.ses .no{border-right:1px solid var(--line);display:grid;place-items:center;font-size:30px;font-weight:700;background:var(--ink)}
+.ses .no span{background:linear-gradient(180deg,#F1DC9C,#B08A35);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ses .body{padding:12px 14px;display:grid;gap:6px;min-width:0}
+.ses .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price{font-size:13px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);padding:2px 7px;white-space:nowrap}
+.price.free{background:var(--ink);color:var(--gold3)}
+.ses ul{margin:0;padding-left:18px;color:var(--ink2);font-size:15.5px}
+.ses .meta{font-size:13px;color:var(--gold)}
+/* instructor */
+.coach{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:14px}
+.avatar{width:76px;height:76px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#3A2F48,#17121F);font-size:26px;font-weight:700}
+.avatar span{background:linear-gradient(180deg,#F1DC9C,#B08A35);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* calendar */
+.cal{border:1px solid var(--line);background:#FFFFFF}
+.cal-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 10px 8px;border-bottom:1px solid var(--line)}
+.cal-h strong{font-size:19px}
+.cal-h .nav{display:flex;gap:6px}
+.cal-h button{font:600 14px var(--f);border:1px solid var(--line);background:#fff;color:var(--ink);min-width:34px;height:34px;padding:0 8px;cursor:pointer}
+.cal-h strong{white-space:nowrap}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.dow span{font-size:11.5px;letter-spacing:.08em;text-align:center;padding:7px 0;color:var(--ink2);border-bottom:1px solid #DDD3EA}
+.grid button{position:relative;aspect-ratio:1/1.05;border:0;border-right:1px solid #EEE7F6;border-bottom:1px solid #EEE7F6;background:#fff;font:400 15px var(--f);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;gap:2px}
+.grid button:nth-child(7n){border-right:0}
+.grid button .d{width:30px;height:30px;display:grid;place-items:center;border-radius:50%}
+.grid button.out{color:#B9AFC8}
+.grid button.today .d{border:1px solid var(--gold2);color:var(--gold);font-weight:700}
+.grid button:disabled{cursor:not-allowed;color:#C9C0D6;background:#FBF9FD}
+.grid button .seat{font-size:10px;color:var(--ink2);white-space:nowrap;max-width:100%;overflow:hidden}
+.grid button.full .seat{color:var(--warn)}
+.grid button.sel .d{background:var(--ink);color:var(--gold3);font-weight:700}
+.grid button .tag{position:absolute;top:3px;right:3px;font-size:9.5px;font-weight:700;padding:0 3px;background:var(--gold3);color:var(--ink);border:1px solid var(--ink)}
+.picks{display:grid;gap:6px}
+.pick{display:grid;grid-template-columns:74px 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);background:var(--card);padding:8px 10px;font-size:15px}
+.pick b{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.pick.active{background:#FFF8E6;box-shadow:inset 3px 0 0 var(--gold2)}
+.pick a{font-size:12.5px;color:var(--gold)}
+.hint{font-size:14px;color:var(--ink2)}
+/* form */
+form{display:grid;gap:12px}
+label{display:grid;gap:5px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+input{font:400 17px var(--f);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:0;padding:12px;width:100%}
+input[aria-invalid="true"]{border-color:var(--warn);box-shadow:0 0 0 1px var(--warn)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.err{font-size:14px;color:var(--warn);min-height:1em}
+/* pay */
+.pay{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:14px;align-items:center}
+.qr{width:132px;height:132px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;padding:6px}
+.qr img,.qr canvas{width:118px!important;height:118px!important;display:block}
+.qr .empty{font-size:12px;text-align:center;color:var(--ink2);line-height:1.35}
+.pay dl{margin:0;display:grid;gap:4px;font-size:14.5px;min-width:0}
+.pay dt{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.pay dd{margin:0 0 4px;word-break:break-word}
+.amount{font-size:24px;font-weight:700}
+.copy{font:600 12px var(--f);border:1px solid var(--line);background:#fff;padding:2px 8px;margin-left:6px;cursor:pointer}
+/* done */
+.done{padding:16px;display:grid;gap:10px;background:var(--ink);color:#EDE4F7;border:1px solid var(--ink)}
+.done h3{color:var(--gold3)}
+.done a{color:var(--gold3)}
+.demo{font-size:12.5px;border:1px dashed var(--line);padding:6px 10px;text-align:center;color:var(--ink2)}
+footer{font-size:13px;color:var(--ink2);display:grid;gap:4px;padding-top:22px;border-top:1px solid var(--line)}
+footer b{color:var(--ink);letter-spacing:.06em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<div class="page">
+  <header class="top">
+    <div class="logo" id="logoBox">
+      <svg aria-label="Golive Dev" role="img" version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="44" height="44" viewBox="0 0 500.000000 500.000000"
+ preserveAspectRatio="xMidYMid meet">
+<g id="gldLogo"><g transform="translate(0.000000,500.000000) scale(0.100000,-0.100000)"
+fill="#17121F" stroke="none">
+<path d="M2255 4369 c-250 -44 -421 -97 -594 -184 -274 -137 -480 -309 -666
+-556 -519 -689 -496 -1668 55 -2344 70 -85 234 -244 315 -306 252 -190 579
+-320 915 -363 194 -25 378 -17 590 24 211 40 487 154 665 273 82 55 249 194
+311 259 261 271 435 613 500 983 72 409 9 842 -177 1207 -268 529 -804 913
+-1399 1003 -105 16 -431 19 -515 4z m405 -143 c278 -32 468 -96 721 -243 124
+-71 220 -147 331 -260 122 -124 155 -164 235 -286 302 -458 359 -1083 147
+-1612 -262 -656 -971 -1112 -1664 -1070 -692 42 -1240 425 -1524 1065 -59 134
+-111 355 -127 548 -25 295 42 653 171 902 179 347 456 623 790 788 184 90 366
+143 580 167 154 17 194 17 340 1z"/>
+<path d="M2340 4084 c-262 -33 -509 -122 -706 -254 -43 -30 -81 -56 -84 -59
+-3 -3 -25 -22 -50 -42 -213 -171 -393 -429 -488 -700 -71 -201 -103 -458 -83
+-661 34 -348 127 -592 325 -853 110 -145 311 -324 449 -399 26 -14 66 -36 90
+-49 23 -13 74 -36 112 -51 486 -194 1021 -143 1445 138 248 164 423 359 555
+621 215 424 220 986 13 1415 -213 441 -631 766 -1120 871 -91 20 -372 34 -458
+23z m416 -198 c211 -52 398 -172 440 -282 47 -124 -26 -256 -152 -270 -84 -10
+-127 8 -219 95 -94 89 -161 125 -261 142 -132 21 -259 -23 -488 -169 -114 -73
+-377 -269 -391 -292 -4 -7 271 -10 819 -10 l825 0 51 32 c46 28 61 32 123 32
+80 1 111 -12 165 -65 51 -50 66 -86 66 -160 0 -57 -4 -74 -30 -115 -18 -30
+-48 -60 -78 -79 -43 -26 -58 -30 -121 -30 -59 1 -79 5 -118 28 -26 15 -59 44
+-74 64 -16 21 -44 54 -64 75 l-37 38 -205 0 c-133 0 -215 -4 -231 -11 -14 -7
+-34 -30 -44 -53 -23 -47 -63 -90 -107 -114 -26 -15 -85 -18 -460 -22 -470 -5
+-456 -4 -519 -66 -116 -117 -89 -324 54 -404 l45 -25 435 -5 c479 -6 468 -4
+524 -70 89 -107 28 -269 -113 -299 -32 -7 -173 -11 -366 -11 -250 0 -315 -3
+-315 -13 0 -12 140 -136 289 -255 140 -112 266 -151 402 -122 90 19 201 93
+484 321 207 167 248 224 249 349 2 138 -86 233 -245 266 -88 18 -140 49 -162
+97 -39 82 -4 188 75 228 36 18 54 21 137 17 331 -15 578 -259 598 -588 13
+-202 -54 -394 -198 -573 -196 -243 -499 -415 -812 -461 -413 -62 -795 69
+-1102 378 -373 376 -524 901 -405 1413 40 170 128 355 244 509 104 140 284
+292 435 369 115 58 273 108 394 125 91 13 390 4 463 -14z m-708 -1383 l3 -82
+41 -3 c44 -3 66 -24 55 -52 -6 -14 -19 -16 -84 -14 l-78 3 -3 109 c-3 115 2
+129 43 124 18 -3 20 -12 23 -85z m232 68 c12 -23 13 -190 1 -209 -5 -8 -21
+-12 -37 -10 l-29 3 -3 104 c-3 108 4 131 39 131 10 0 23 -9 29 -19z m127 7 c6
+-7 18 -34 28 -60 20 -55 31 -59 46 -20 35 87 39 93 62 90 34 -5 32 -33 -11
+-138 -36 -89 -40 -95 -69 -98 -33 -3 -39 6 -79 108 -9 25 -21 49 -26 55 -10
+11 -11 59 -1 68 11 11 40 8 50 -5z m367 6 c9 -3 16 -16 16 -29 0 -25 -17 -35
+-61 -35 -42 0 -36 -18 9 -22 32 -3 37 -6 37 -28 0 -21 -5 -26 -38 -30 -53 -7
+-51 -24 3 -30 40 -4 45 -8 45 -30 0 -24 -3 -25 -74 -28 -53 -2 -77 1 -82 10
+-5 7 -9 54 -9 105 0 112 8 123 85 123 29 0 60 -3 69 -6z"/>
+</g>
+</g></svg>
+      <div><b>GOLIVE DEV</b><small>PRACTICAL TECHNOLOGY</small></div>
+    </div>
+    <span class="cap">Thư mời</span>
+  </header>
+  <div class="hero" aria-label="Hình 3D trí tuệ nhân tạo tổng quát">
+    <div class="fallback"></div>
+    <canvas id="agi"></canvas>
+    <div class="tagline"><span>ONLINE · 3 BUỔI</span><span>21:00 – 22:30</span></div>
+    <span class="stamp">by AI</span>
+  </div>
+  <div class="title">
+    <span class="cap">Khoá thực hành chuyên sâu</span>
+    <h1 class="gold">Thiết lập AI Agent System Action</h1>
+    <p class="sub">Từ một trợ lý AI đến một bộ máy agent biết giao việc, chấm điểm và hành động thật.</p>
+  </div>
+  <p class="inviter" style="padding-block:6px 18px">Golive Dev trân trọng kính mời Anh/Chị tham dự khoá thực hành do <b style="font-style:normal">JACK TON</b> trực tiếp hướng dẫn.</p>
+  <a class="cta" href="#book">Chọn lịch &amp; giữ chỗ</a>
+  <section style="margin-top:26px">
+    <div class="facts">
+      <div><b class="gold">T3·T5·T7</b><span>mỗi tuần một khoá mới</span></div>
+      <div><b class="gold">10</b><span>học viên tối đa mỗi buổi</span></div>
+      <div><b class="gold">0đ</b><span>Buổi 1 miễn phí</span></div>
+      <div><b class="gold">400K</b><span>trọn khoá (buổi 2 + 3)</span></div>
+    </div>
+    <p class="hint">Học trực tuyến qua Jitsi Meet trên trình duyệt hoặc điện thoại, không cần cài phần mềm. Link phòng học gửi riêng qua email sau khi đăng ký.</p>
+  </section>
+  <section>
+    <span class="cap">Lộ trình</span>
+    <h2 class="gold">Ba buổi, một hệ thống chạy được</h2>
+    <p class="hint">Học phí buổi 2 – 3 thu trước theo khoá: <b>400.000đ/khoá</b>. Buổi 1 miễn phí.</p>
+    <article class="ses"><div class="no"><span>1</span></div><div class="body">
+      <div class="row"><h3>Giải phẫu một AI Agent</h3><span class="price free">Miễn phí</span></div>
+      <ul><li>Bản chất agent: não, hiến chương, kỹ năng, trí nhớ, công cụ, phanh</li><li>Viết hiến chương và tạo agent đầu tiên trên Claude / ChatGPT</li><li>Ba bài thử: đúng phạm vi, thiếu dữ liệu, việc bị cấm</li></ul>
+      <span class="meta">Thứ Ba · 21:00 – 22:30 · Online</span></div></article>
+    <article class="ses"><div class="no"><span>2</span></div><div class="body">
+      <div class="row"><h3>Dựng bộ máy đa Agent</h3><span class="price">Trong học phí</span></div>
+      <ul><li>Tổng chỉ huy + agent chuyên trách, phiếu giao việc chuẩn</li><li>Kết nối công cụ qua MCP: Drive, Gmail, Sheets</li><li>Thực hành trong môi trường sandbox riêng của học viên</li></ul>
+      <span class="meta">Thứ Năm · 21:00 – 22:30 · Sandbox environment</span></div></article>
+    <article class="ses"><div class="no"><span>3</span></div><div class="body">
+      <div class="row"><h3>Agent hành động thật</h3><span class="price">Trong học phí</span></div>
+      <ul><li>Chấm điểm thang 100, cổng người duyệt, quyền Đọc / Đề xuất / Thực thi</li><li>Chạy một quy trình thật của doanh nghiệp từ đầu đến cuối</li><li>Đóng gói Agent Kit mang về, dùng được trên nhiều nền tảng</li></ul>
+      <span class="meta">Thứ Bảy · 21:00 – 22:30 · Sandbox environment</span></div></article>
+  </section>
+  <section>
+    <span class="cap">Người hướng dẫn thực hành</span>
+    <div class="box coach"><div class="avatar"><span>JT</span></div>
+      <div><h3 class="gold" style="font-size:24px;letter-spacing:.08em">JACK TON</h3><p class="hint">Kiến trúc sư hệ thống AI Agentic AtinCaptain · Golive Dev</p></div></div>
+  </section>
+  <section id="book">
+    <span class="cap">Bước 1 · Chọn lịch</span>
+    <h2 class="gold">Chọn khoá học trong tháng</h2>
+    <p class="hint">Mỗi tuần một khoá: <b>Thứ Ba</b> Buổi 1 · <b>Thứ Năm</b> Buổi 2 · <b>Thứ Bảy</b> Buổi 3, đều 21:00 – 22:30. Chọn một Thứ Ba để bắt đầu, hệ thống điền sẵn Thứ Năm và Thứ Bảy cùng tuần. Bận buổi nào thì bấm sang Thứ Năm / Thứ Bảy khác trong cùng tháng. Ký hiệu <b>B1·10</b> = Buổi 1, còn 10 chỗ.</p>
+    <div class="cal">
+      <div class="cal-h"><strong id="calTitle">Tháng</strong>
+        <div class="nav"><button type="button" id="today">Hôm nay</button><button type="button" id="prev" aria-label="Tháng trước">‹</button><button type="button" id="next" aria-label="Tháng sau">›</button></div></div>
+      <div class="dow"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="picks" id="picks"></div>
+    <button type="button" class="cta ghost" id="clear" style="padding:10px;font-size:13px">Chọn lại lịch</button>
+  </section>
+  <section>
+    <span class="cap">Điều khoản khoá học</span>
+    <div class="box" style="padding:14px 16px"><ul style="margin:0;padding-left:18px;display:grid;gap:6px;color:var(--ink2);font-size:15.5px">
+      <li>Mỗi tài khoản đăng ký được hỗ trợ trong <b>tháng của khoá đó</b>; cả 3 buổi chọn trong cùng tháng.</li>
+      <li>Học viên đã từng đăng ký vẫn có thể đăng ký học cùng khoá mới trong tháng.</li>
+      <li>Tối đa <b>10 học viên mỗi buổi</b>. Buổi đủ chỗ sẽ khoá trên lịch, ưu tiên thành viên bỏ lỡ buổi 1 trong 3 buổi học trong tháng.</li>
+      <li>Học phí buổi 2 – 3 thu trước <b>400.000đ/khoá</b>; buổi 1 miễn phí.</li>
+      <li>Tư vấn cá nhân ngoài giờ học: liên hệ JACK TON qua email xác nhận.</li>
+    </ul></div>
+  </section>
+  <section>
+    <span class="cap">Bước 2 · Đăng ký</span>
+    <h2 class="gold">Thông tin học viên</h2>
+    <form id="form" novalidate>
+      <label for="fName">Họ và tên<input id="fName" name="name" autocomplete="name" required></label>
+      <label for="fPhone">Số điện thoại<input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" required></label>
+      <label for="fEmail">Email<input id="fEmail" name="email" type="email" autocomplete="email" required></label>
+      <label for="fCompany">Tên doanh nghiệp<input id="fCompany" name="company" autocomplete="organization"></label>
+      <div class="hp" aria-hidden="true"><label for="fWeb">Website<input id="fWeb" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="err" id="err" role="alert"></p>
+      <button class="cta" id="submit" type="submit">Xác nhận đặt lịch</button>
+    </form>
+  </section>
+  <section>
+    <span class="cap">Bước 3 · Học phí 400.000đ/khoá</span>
+    <div class="box pay">
+      <div class="qr" id="qr"><span class="empty">Mã QR hiện khi điền số điện thoại</span></div>
+      <dl>
+        <dt>Số tiền</dt><dd class="amount gold" id="amt">400.000đ</dd>
+        <dt>Nội dung</dt><dd><span id="memo">GLD K.. …</span><button type="button" class="copy" id="cpMemo">Chép</button></dd>
+        <dt>Tài khoản</dt><dd id="acct">—</dd>
+      </dl>
+    </div>
+    <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung chuyển khoản đã điền sẵn. Buổi 1 miễn phí, không cần chuyển khoản.</p>
+  </section>
+  <div id="done" hidden></div>
+  <p class="demo" id="demoNote" hidden>Bản xem thử: dữ liệu chỉ lưu trên máy này, chưa gửi Google Sheet và email.</p>
+  <footer>
+    <svg viewBox="0 0 500 500" width="56" height="56" aria-hidden="true" style="margin-bottom:6px"><use href="#gldLogo"/></svg>
+    <b>CÔNG TY CỔ PHẦN CÔNG NGHỆ THỰC HÀNH GOLIVE DEV</b>
+    <span>MST 0110510412 · Số 21, ngõ 6 đường Sa Đôi, phường Tây Mỗ, Hà Nội</span>
+    <span>Hotline 0936 355 587 · Phòng học trực tuyến Jitsi Meet</span>
+  </footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ============ CẤU HÌNH — BOSS chỉ sửa khối này ============ */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbw4h19l8n5botdswrY2aC3H6M98EeIdvoQkOK8VZ8rcFDMOdKusRWl6bMQdFlg4H-T1/exec",  // URL Web App Apps Script
+  BANK: { bin: "970407", account: "7272233727", name: "TON BINH TINH", label: "Techcombank" },
+  FIRST_COURSE: "2026-10-13",             // Thứ Ba của Khoá 01
+  DAYS: [2, 4, 6],                        // Buổi 1 = Thứ Ba, Buổi 2 = Thứ Năm, Buổi 3 = Thứ Bảy
+  FEES: [0, 200000, 200000],
+  MAX: 10,
+  START: "21:00", END: "22:30",
+  COURSE: "Thiết lập AI Agent System Action"
+};
+const LIVE = /^https:\/\/script\.google\.com\//.test(CONFIG.API_URL);
+const BANK_OK = /^\d{6}$/.test(CONFIG.BANK.bin) && /^\d{4,19}$/.test(CONFIG.BANK.account);
+/* ============ 3D AGI (Three.js) ============ */
+(function agi(){
+  const cv=document.getElementById("agi");
+  if(!window.THREE){cv.hidden=true;return}
+  let r;try{r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){cv.hidden=true;return}
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  r.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(36,1,0.1,100);cam.position.set(0,0.2,9);
+  scene.add(new THREE.AmbientLight(0xF3E9FF,0.9));
+  const key=new THREE.DirectionalLight(0xFFF2D0,1.3);key.position.set(4,5,6);scene.add(key);
+  const rim=new THREE.PointLight(0xC9B4F0,1.6,30);rim.position.set(-5,-2,3);scene.add(rim);
+  const core=new THREE.PointLight(0xFFD27A,2.4,9);scene.add(core);
+  const root=new THREE.Group();scene.add(root);
+  // lõi vàng
+  const heart=new THREE.Mesh(new THREE.IcosahedronGeometry(0.62,3),new THREE.MeshStandardMaterial({color:0xE8C26A,emissive:0xB0801E,emissiveIntensity:.75,metalness:.9,roughness:.25}));root.add(heart);
+  // vỏ pha lê
+  const shell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.55,1),new THREE.MeshPhysicalMaterial({color:0xF4EEFF,metalness:.05,roughness:.08,transmission:.9,thickness:.6,transparent:true,opacity:.55,clearcoat:1,clearcoatRoughness:.05}));root.add(shell);
+  const wire=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.57,1)),new THREE.LineBasicMaterial({color:0xC9A24A,transparent:true,opacity:.75}));root.add(wire);
+  // vòng quỹ đạo vàng
+  const gold=new THREE.MeshStandardMaterial({color:0xD7B25E,metalness:1,roughness:.22,emissive:0x4A3408,emissiveIntensity:.25});
+  const rings=[[2.25,.018,[1.2,0,.3]],[2.6,.012,[.4,.9,0]],[2.95,.01,[-.6,.3,1]]].map(([R,t,rot])=>{const m=new THREE.Mesh(new THREE.TorusGeometry(R,t,16,160),gold);m.rotation.set(...rot);root.add(m);return m});
+  // mạng agent: nút + sợi sáng
+  const nodes=[],N=9,ng=new THREE.SphereGeometry(.085,24,24),nm=new THREE.MeshPhysicalMaterial({color:0xFFFFFF,roughness:.05,transmission:.6,clearcoat:1,emissive:0xE9D6A0,emissiveIntensity:.35});
+  for(let i=0;i<N;i++){const m=new THREE.Mesh(ng,nm);const a=i/N*Math.PI*2,R=2.25+(i%3)*.35;m.userData={a,R,s:.18+(i%4)*.05,y:(i%3-1)*.55};root.add(m);nodes.push(m)}
+  const lg=new THREE.BufferGeometry(),lp=new Float32Array(N*2*3);lg.setAttribute("position",new THREE.BufferAttribute(lp,3));
+  const links=new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0xB08A35,transparent:true,opacity:.55}));root.add(links);
+  // bụi sao
+  const sg=new THREE.BufferGeometry(),sp=new Float32Array(240*3);for(let i=0;i<sp.length;i++)sp[i]=(Math.random()-.5)*12;sg.setAttribute("position",new THREE.BufferAttribute(sp,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xB08A35,size:.03,transparent:true,opacity:.7})));
+  let drag=0,last=null,spin=0;
+  cv.addEventListener("pointerdown",e=>{last=e.clientX});addEventListener("pointerup",()=>last=null);
+  cv.addEventListener("pointermove",e=>{if(last!==null){drag+=(e.clientX-last)*.006;last=e.clientX}});
+  function size(){const w=cv.clientWidth,h=cv.clientHeight;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+  addEventListener("resize",size);size();
+  const t0=performance.now();
+  (function loop(){const t=(performance.now()-t0)/1000;spin+=(reduce?0:.0035);
+    root.rotation.y=spin+drag;root.rotation.x=Math.sin(t*.3)*.08;
+    heart.scale.setScalar(1+Math.sin(t*2)*.04);rings.forEach((m,i)=>m.rotation.z+=reduce?0:.002*(i+1));
+    nodes.forEach((m,i)=>{const u=m.userData,a=u.a+t*u.s*(reduce?0:1);m.position.set(Math.cos(a)*u.R,u.y+Math.sin(a*1.3)*.25,Math.sin(a)*u.R*.55)});
+    for(let i=0;i<N;i++){const a=nodes[i].position,b=i%3===0?{x:0,y:0,z:0}:nodes[(i+1)%N].position;lp.set([a.x,a.y,a.z,b.x,b.y,b.z],i*6)}lg.attributes.position.needsUpdate=true;
+    r.render(scene,cam);requestAnimationFrame(loop)})();
+})();
+/* ============ Tiện ích ============ */
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const vnd=n=>n.toLocaleString("vi-VN")+"đ";
+const DOW=["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"];
+const nice=s=>{const d=new Date(s+"T00:00:00");return DOW[d.getDay()]+", "+pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear()};
+const store={get(k,v){try{return JSON.parse(localStorage.getItem("gldInv:"+k))??v}catch(e){return v}},set(k,v){try{localStorage.setItem("gldInv:"+k,JSON.stringify(v))}catch(e){}}};
+/* ============ Lịch (kiểu Google Calendar) ============ */
+const now=new Date();
+let view=new Date(now.getFullYear(),now.getMonth(),1);
+if(iso(now)<CONFIG.FIRST_COURSE){const f=new Date(CONFIG.FIRST_COURSE+"T00:00:00");view=new Date(f.getFullYear(),f.getMonth(),1)}
+let picks=store.get("picks",[]);           // ["YYYY-MM-DD", ...] tối đa 3, tăng dần
+let booked={};                              // {"YYYY-MM-DD": số đã đặt}
+function cutoff(day){const [h,m]=CONFIG.START.split(":");const d=new Date(day+"T00:00:00");d.setHours(+h,+m,0,0);return d<=new Date()}
+async function loadSlots(){
+  const y=view.getFullYear(),m=view.getMonth();const from=iso(new Date(y,m,1)),to=iso(new Date(y,m+1,0));
+  if(LIVE){try{const r=await fetch(CONFIG.API_URL+"?action=slots&from="+from+"&to="+to);const j=await r.json();if(j.ok)booked=Object.assign(booked,j.booked)}catch(e){}}
+  else{booked=store.get("demoBooked",{})}
+  renderCal()}
+const DAYMS=864e5;
+function courseNo(day){return Math.floor((new Date(day+"T00:00:00")-new Date(CONFIG.FIRST_COURSE+"T00:00:00"))/DAYMS/7)+1}
+function courseLabel(day){const n=courseNo(day),t=new Date(CONFIG.FIRST_COURSE+"T00:00:00");t.setDate(t.getDate()+(n-1)*7);const e=new Date(t);e.setDate(t.getDate()+4);
+  return "Khoá "+pad(n)+" ("+pad(t.getDate())+"/"+pad(t.getMonth()+1)+" – "+pad(e.getDate())+"/"+pad(e.getMonth()+1)+"/"+e.getFullYear()+")"}
+const sameMonth=(a,b)=>a.slice(0,7)===b.slice(0,7);
+function slot(k){const d=new Date(k+"T00:00:00").getDay();return CONFIG.DAYS.indexOf(d)}   // 0,1,2 hoặc -1
+function canPick(k){const s=slot(k);if(s<0||k<CONFIG.FIRST_COURSE||cutoff(k))return false;
+  if((booked[k]||0)>=CONFIG.MAX)return false;
+  if(s===0)return true;
+  if(!picks[0]||!sameMonth(k,picks[0]))return false;
+  if(s===1)return k>picks[0];
+  return k>(picks[1]||picks[0])&&(!!picks[1])}
+function renderCal(){
+  const y=view.getFullYear(),m=view.getMonth();
+  $("#calTitle").textContent="Tháng "+(m+1)+" năm "+y;
+  const first=new Date(y,m,1),start=new Date(y,m,1-((first.getDay()+6)%7));
+  let h="";for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=iso(d);
+    const out=d.getMonth()!==m, s=slot(k), past=cutoff(k)||k<CONFIG.FIRST_COURSE, n=booked[k]||0, left=Math.max(0,CONFIG.MAX-n), full=left===0, idx=picks.indexOf(k);
+    const ok=idx>=0||canPick(k);
+    h+=`<button type="button" data-d="${k}" class="${out?"out ":""}${k===iso(now)?"today ":""}${idx>=0?"sel ":""}${full?"full":""}" ${ok?"":"disabled"} aria-pressed="${idx>=0}" aria-label="${nice(k)}${s>=0&&!past?", Buổi "+(s+1)+", còn "+left+" chỗ":""}">
+      <span class="d">${d.getDate()}</span>${s>=0&&!past?`<span class="seat">${full?"Hết":"B"+(s+1)+"·"+left}</span>`:""}${idx>=0?`<span class="tag">B${idx+1}</span>`:""}</button>`}
+  $("#grid").innerHTML=h;
+  document.querySelectorAll("#grid button[data-d]").forEach(b=>b.onclick=()=>toggle(b.dataset.d));
+  $("#prev").disabled=view<=new Date(now.getFullYear(),now.getMonth(),1);
+  renderPicks()}
+function toggle(k){const s=slot(k);if(s<0)return;
+  if(picks[s]===k){picks=picks.slice(0,s)}            // bỏ chọn buổi này và các buổi sau
+  else if(s===0){picks=[k];                            // Thứ Ba: điền sẵn T5, T7 cùng tuần nếu còn chỗ và cùng tháng
+    for(const off of [2,4]){const d=new Date(k+"T00:00:00");d.setDate(d.getDate()+off);const kk=iso(d);if(canPick(kk))picks.push(kk);else break}}
+  else if(canPick(k)){picks=picks.slice(0,s);picks[s]=k;
+    if(s===1&&picks[2]===undefined){}}
+  store.set("picks",picks);renderCal()}
+function gcal(day,i){const d=day.replace(/-/g,""),s=CONFIG.START.replace(":","")+"00",e=CONFIG.END.replace(":","")+"00";
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("GLD · "+CONFIG.COURSE+" · Buổi "+(i+1))+"&dates="+d+"T"+s+"/"+d+"T"+e+"&ctz=Asia/Ho_Chi_Minh&details="+encodeURIComponent("Link phòng học Jitsi gửi trong email xác nhận. Người hướng dẫn: JACK TON")}
+function renderPicks(){
+  const lab=["Thứ Ba","Thứ Năm","Thứ Bảy"];
+  $("#picks").innerHTML=(picks[0]?`<div class="pick" style="background:var(--ink);color:var(--gold3);grid-template-columns:1fr"><b>${courseLabel(picks[0])}</b></div>`:"")+
+  [0,1,2].map(i=>{const k=picks[i];const active=i===picks.length;
+    return `<div class="pick ${active?"active":""}"><b>Buổi ${i+1}</b><span>${k?nice(k)+" · 21:00":active?"Chọn một "+lab[i]+" trên lịch…":"—"}</span><span></span></div>`}).join("");renderPay()}
+$("#prev").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);loadSlots()};
+$("#next").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);loadSlots()};
+$("#today").onclick=()=>{view=new Date(now.getFullYear(),now.getMonth(),1);loadSlots()};
+$("#clear").onclick=()=>{picks=[];store.set("picks",picks);renderCal()};
+/* ============ VietQR động (EMVCo) ============ */
+const total=CONFIG.FEES.reduce((a,b)=>a+b,0);
+$("#amt").textContent=vnd(total);
+function tlv(id,v){return id+pad(v.length)+v}
+function crc16(s){let c=0xFFFF;for(let i=0;i<s.length;i++){c^=s.charCodeAt(i)<<8;for(let j=0;j<8;j++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF}return c.toString(16).toUpperCase().padStart(4,"0")}
+function vietqr(memo){const acc=tlv("00","A000000727")+tlv("01",tlv("00",CONFIG.BANK.bin)+tlv("01",CONFIG.BANK.account))+tlv("02","QRIBFTTA");
+  let p=tlv("00","01")+tlv("01","12")+tlv("38",acc)+tlv("53","704")+tlv("54",String(total))+tlv("58","VN")+tlv("62",tlv("08",memo))+"6304";return p+crc16(p)}
+let paidMemo=null;
+function memoFor(phone){if(paidMemo&&!picks[0])return paidMemo;const p=String(phone||"").replace(/\D/g,"");return "GLD "+(picks[0]?"K"+pad(courseNo(picks[0])):"KHOA")+" "+(p?p.slice(-9):"")}
+function renderPay(){const memo=memoFor($("#fPhone").value);$("#memo").textContent=memo.trim()+(memo.endsWith(" ")?"…":"");
+  $("#acct").textContent=BANK_OK?(CONFIG.BANK.label+" · "+CONFIG.BANK.account+(CONFIG.BANK.name&&!/%%/.test(CONFIG.BANK.name)?" · "+CONFIG.BANK.name:"")):"Đang cập nhật";
+  const box=$("#qr");box.innerHTML="";
+  if(!BANK_OK){box.innerHTML='<span class="empty">Mã QR ngân hàng sẽ hiện tại đây</span>';return}
+  if(!/\d{6,}/.test(memo)){box.innerHTML='<span class="empty">Mã QR hiện khi điền số điện thoại</span>';return}
+  if(window.QRCode)new QRCode(box,{text:vietqr(memo),width:236,height:236,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
+$("#fPhone").addEventListener("input",renderPay);
+$("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText($("#memo").textContent);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
+/* ============ Đăng ký ============ */
+const fields=["fName","fPhone","fEmail","fCompany"];
+fields.forEach(id=>{const el=$("#"+id);el.value=store.get(id,"");el.addEventListener("input",()=>{store.set(id,el.value);el.removeAttribute("aria-invalid")})});
+function check(){const v=id=>$("#"+id).value.trim();const bad=[];
+  if(v("fName").length<2)bad.push(["fName","Vui lòng nhập họ và tên."]);
+  if(!/^(0|\+84)\d{9,10}$/.test(v("fPhone").replace(/[\s.]/g,"")))bad.push(["fPhone","Số điện thoại chưa đúng (10 số, bắt đầu bằng 0)."]);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("fEmail")))bad.push(["fEmail","Email chưa đúng định dạng."]);
+  bad.forEach(([id])=>$("#"+id).setAttribute("aria-invalid","true"));
+  if(picks.length<3)return "Hãy chọn đủ 3 buổi: Thứ Ba, Thứ Năm, Thứ Bảy trong cùng tháng.";
+  return bad.length?bad[0][1]:""}
+$("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=check();$("#err").textContent=msg;
+  if(msg){if(picks.length<3)$("#book").scrollIntoView({behavior:"smooth"});return}
+  const btn=$("#submit");btn.disabled=true;btn.textContent="Đang gửi…";
+  const data={name:$("#fName").value.trim(),phone:$("#fPhone").value.replace(/[\s.]/g,""),email:$("#fEmail").value.trim(),company:$("#fCompany").value.trim(),dates:picks.slice(),website:$("#fWeb").value};
+  let res;
+  try{
+    if(LIVE){const r=await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify(data)});res=await r.json()}
+    else{const b=store.get("demoBooked",{});for(const d of data.dates)if((b[d]||0)>=CONFIG.MAX){res={ok:false,error:"FULL",date:d};break}
+      if(!res){data.dates.forEach(d=>b[d]=(b[d]||0)+1);store.set("demoBooked",b);res={ok:true,id:"GLD-DEMO",memo:memoFor(data.phone),fee:total,mailed:false,demo:true}}}
+  }catch(x){res={ok:false,error:"NET"}}
+  btn.disabled=false;btn.textContent="Xác nhận đặt lịch";
+  if(!res.ok){$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
+  done(data,res)});
+function done(d,res){const el=$("#done");el.hidden=false;
+  el.innerHTML=`<section><div class="done"><span class="cap" style="color:#D9B866">Đặt lịch thành công · ${res.id}</span>
+  <h3>Cảm ơn ${d.name.replace(/[<>&]/g,"")}, Golive Dev đã giữ chỗ cho bạn tại ${res.course||courseLabel(d.dates[0])}.</h3>
+  ${d.dates.map((k,i)=>`<p>Buổi ${i+1}: ${nice(k)} · 21:00–22:30 · <a href="${gcal(k,i)}" target="_blank" rel="noopener">Thêm vào Google Calendar</a></p>`).join("")}
+  <p>${res.demo?"Ở bản chính thức, email xác nhận kèm link phòng học sẽ gửi tới "+d.email+".":"Email xác nhận kèm link phòng học Jitsi đã gửi tới <b>"+d.email+"</b>. Nếu chưa thấy trong Hộp thư đến, kiểm tra mục Quảng cáo/Spam và bấm “Không phải spam”."}</p>
+  <p>Học phí khoá (buổi 2 – 3): <b>${vnd(res.fee)}</b>, nội dung chuyển khoản <b>${res.memo}</b>. Quét mã QR ở Bước 3.</p></div></section>`;
+  el.scrollIntoView({behavior:"smooth"});paidMemo=res.memo;picks=[];store.set("picks",picks);renderPay();loadSlots()}
+if(picks.some((k,i)=>slot(k)!==i||cutoff(k))){picks=[];store.set("picks",picks)}
+$("#demoNote").hidden=LIVE;
+renderPay();loadSlots();
+</script>
+</body></html>
