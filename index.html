@@ -438,7 +438,7 @@ function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hi
   <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
   <p class="waiting" id="payWait" role="status"><span class="dot"></span>Đang chờ tiền về — trang sẽ tự xác nhận ngay khi nhận được chuyển khoản (thường dưới 1 phút).</p>
   <button type="button" class="cta ghost" id="payLater" style="padding:12px;font-size:13px">Lưu lại, chuyển khoản đăng ký sau</button>
-  <p class="hint" style="text-align:center;margin:0">Trong 24 giờ, nhập lại số điện thoại ở mục Đăng ký để mở lại bước thanh toán này.</p>`;
+  <p class="hint" style="text-align:center;margin:0">Trong 24 giờ, nhập lại đúng số điện thoại và email đã đăng ký để mở lại bước thanh toán này.</p>`;
   qrInto($("#qrBig"),pay.memo);
   $("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText(pay.memo);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
   $("#payLater").onclick=closePay;
@@ -457,12 +457,13 @@ function showPending(){const el=$("#done");if(pay&&pay.step==="pay"&&pay.at&&Dat
     ?`<section><div class="pending"><span>${pay.course}: đã lưu đăng ký, <b>chờ chuyển khoản</b> trước ${deadline()}.</span><button type="button" id="reopen">Thanh toán</button></div></section>`
     :`<section><div class="pending"><span>${pay.course}: ${pay.step==="done"?"<b>đăng ký thành công</b>, email xác nhận đã gửi.":"đã nhận học phí, Golive Dev sẽ liên hệ xếp buổi."}</span><button type="button" id="reopen">Xem</button></div></section>`;
   $("#reopen").onclick=openPay}
-/* Nhập lại SĐT trong 24h → mở lại đăng ký đang chờ chuyển khoản */
+/* Nhập lại SĐT + email đã đăng ký trong 24h → mở lại đăng ký đang chờ chuyển khoản */
 let rsT=null,rsLast="";
-$("#fPhone").addEventListener("input",()=>{clearTimeout(rsT);const ph=$("#fPhone").value.replace(/[\s.]/g,"");
-  if(!LIVE||!/^(0|\+84)\d{9,10}$/.test(ph)||ph===rsLast)return;
-  rsT=setTimeout(async()=>{rsLast=ph;let r;try{r=await(await fetch(CONFIG.API_URL+"?action=resume&phone="+encodeURIComponent(ph))).json()}catch(e){return}
-    if(r&&r.ok&&r.booking){const b=r.booking;pay={id:b.id,memo:b.memo,course:b.course,dates:b.dates,fee:b.fee,email:b.email,at:b.at,step:"pay"};store.set("pay",pay);showPending();openPay()}},700)});
+function tryResume(){clearTimeout(rsT);const ph=$("#fPhone").value.replace(/[\s.]/g,""),em=$("#fEmail").value.trim().toLowerCase(),key=ph+"|"+em;
+  if(!LIVE||!/^(0|\+84)\d{9,10}$/.test(ph)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||key===rsLast)return;
+  rsT=setTimeout(async()=>{rsLast=key;let r;try{r=await(await fetch(CONFIG.API_URL+"?action=resume&phone="+encodeURIComponent(ph)+"&email="+encodeURIComponent(em))).json()}catch(e){return}
+    if(r&&r.ok&&r.booking){const b=r.booking;pay={id:b.id,memo:b.memo,course:b.course,dates:b.dates,fee:b.fee,email:b.email,at:b.at,step:"pay"};store.set("pay",pay);showPending();openPay()}},700)}
+$("#fPhone").addEventListener("input",tryResume);$("#fEmail").addEventListener("input",tryResume);
 $("#payClose").onclick=closePay;
 $("#payModal").addEventListener("click",e=>{if(e.target.id==="payModal")closePay()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#payModal").hidden)closePay()});
