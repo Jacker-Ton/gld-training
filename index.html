@@ -121,6 +121,9 @@ input[aria-invalid="true"]{border-color:var(--warn);box-shadow:0 0 0 1px var(--w
 .sess{display:grid;gap:4px;font-size:15px;border:1px solid var(--line);background:var(--card);padding:10px 12px}
 .pending{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);background:#FFF8E6;padding:10px 12px;font-size:14.5px}
 .pending button{font:600 13px var(--f);border:1px solid var(--line);background:var(--ink);color:var(--gold3);padding:6px 10px;cursor:pointer;white-space:nowrap}
+.waiting{display:flex;gap:10px;align-items:center;margin:0;font-size:14px;border:1px dashed var(--gold);padding:10px 12px;background:#FFF8E6}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 /* done */
 .done{padding:16px;display:grid;gap:10px;background:var(--ink);color:#EDE4F7;border:1px solid var(--ink)}
 .done h3{color:var(--gold3)}
@@ -407,17 +410,23 @@ function vietqr(memo){const acc=tlv("00","A000000727")+tlv("01",tlv("00",CONFIG.
   let p=tlv("00","01")+tlv("01","12")+tlv("38",acc)+tlv("53","704")+tlv("54",String(total))+tlv("58","VN")+tlv("62",tlv("08",memo))+"6304";return p+crc16(p)}
 function renderPay(){}                                     // QR nằm trong popup thanh toán
 let pay=store.get("pay",null);                             // {id,memo,course,dates,fee,name,email,step}
+if(pay&&pay.step==="sent")pay.step="pay";                  // bản cũ: "đã báo CK" → vẫn chờ tiền về
 function qrInto(box,memo){box.innerHTML="";
   if(!BANK_OK){box.innerHTML='<span class="hint">Mã QR ngân hàng sẽ hiện tại đây</span>';return}
   if(window.QRCode)new QRCode(box,{text:vietqr(memo),width:400,height:400,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
 function memoLegend(m){const t=m.split(" ");return t.length>=5?`${t[1]} = ${courseLabel(pay.dates[0]).replace(/ \(.*/,"")} · ${t[2].slice(0,2)}/${t[2].slice(2)} = ngày Buổi 1 · ${t[3]} = giờ học · ${t[4]} = 4 số cuối SĐT`:""}
+const HOLD=24*3600e3;
+let poll=null;
+function deadline(){const t=new Date((pay.at||Date.now())+HOLD);return pad(t.getHours())+":"+pad(t.getMinutes())+" "+pad(t.getDate())+"/"+pad(t.getMonth()+1)}
 function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hidden=false;document.body.style.overflow="hidden";
   const sess=`<div class="sess">${pay.dates.map((k,i)=>`<span><b>Buổi ${i+1}</b> · ${nice(k)} · ${CONFIG.START}–${CONFIG.END}</span>`).join("")}</div>`;
-  if(pay.step==="sent"){
-    body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">Đã ghi nhận chuyển khoản</h3>
+  if(pay.step==="done"||pay.step==="hold"){stopPoll();
+    body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.step==="done"?"Đăng ký thành công":"Đã nhận học phí"}</h3>
     <p>Mã đăng ký <b>${pay.id}</b> · ${pay.course}</p>${sess}
-    <p class="hint">Golive Dev đang đối soát giao dịch <b>${pay.memo}</b>. Khi tiền về tài khoản, email xác nhận kèm link phòng học Jitsi sẽ gửi tới <b>${esc(pay.email)}</b>. Không thấy trong Hộp thư đến thì kiểm tra mục Spam/Quảng cáo.</p>
-    <div class="sess">${pay.dates.map((k,i)=>`<a href="${gcal(k,i)}" target="_blank" rel="noopener" style="color:var(--gold)">Thêm Buổi ${i+1} vào Google Calendar</a>`).join("")}</div>
+    <p class="hint">${pay.step==="done"
+      ?`Golive Dev đã nhận học phí. Email xác nhận kèm link phòng học Jitsi và file lịch đã gửi tới <b>${esc(pay.email||"email bạn đăng ký")}</b>. Không thấy trong Hộp thư đến thì kiểm tra mục Spam/Quảng cáo.`
+      :`Golive Dev đã nhận học phí, nhưng buổi bạn chọn vừa đủ ${CONFIG.MAX} học viên. Golive Dev sẽ liên hệ trong ngày để xếp buổi phù hợp.`}</p>
+    ${pay.step==="done"?`<div class="sess">${pay.dates.map((k,i)=>`<a href="${gcal(k,i)}" target="_blank" rel="noopener" style="color:var(--gold)">Thêm Buổi ${i+1} vào Google Calendar</a>`).join("")}</div>`:""}
     <button type="button" class="cta" id="payDone">Hoàn tất</button>`;
     $("#payDone").onclick=closePay;return}
   body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.course}</h3>${sess}
@@ -427,26 +436,33 @@ function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hi
     <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
   <p class="hint">${memoLegend(pay.memo)}</p>
   <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
-  <p class="err" id="payErr" role="alert"></p>
-  <button type="button" class="cta" id="payPaid">Tôi đã chuyển khoản</button>
-  <button type="button" class="cta ghost" id="payLater" style="padding:10px;font-size:13px">Để sau</button>`;
+  <p class="waiting" id="payWait" role="status"><span class="dot"></span>Đang chờ tiền về — trang sẽ tự xác nhận ngay khi nhận được chuyển khoản (thường dưới 1 phút).</p>
+  <button type="button" class="cta ghost" id="payLater" style="padding:12px;font-size:13px">Lưu lại, chuyển khoản đăng ký sau</button>
+  <p class="hint" style="text-align:center;margin:0">Trong 24 giờ, nhập lại số điện thoại ở mục Đăng ký để mở lại bước thanh toán này.</p>`;
   qrInto($("#qrBig"),pay.memo);
   $("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText(pay.memo);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
   $("#payLater").onclick=closePay;
-  $("#payPaid").onclick=async()=>{const b=$("#payPaid");b.disabled=true;b.textContent="Đang gửi…";let r;
-    try{if(LIVE){r=await(await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify({action:"paid",id:pay.id})})).json()}else r={ok:true,status:"AWAITING_CHECK"}}catch(x){r={ok:false}}
-    if(r.ok){pay.step="sent";store.set("pay",pay);openPay();showPending()}
-    else if(r.error==="CANCELLED"||r.error==="NOT_FOUND"){expire("Đăng ký "+pay.id+" đã quá hạn 24 giờ và bị huỷ. Nếu bạn đã chuyển khoản, vui lòng trả lời email hoặc gọi hotline; hoặc chọn lịch để đăng ký lại.")}
-    else{b.disabled=false;b.textContent="Tôi đã chuyển khoản";$("#payErr").textContent="Chưa gửi được, kiểm tra mạng rồi bấm lại."}}}
-const HOLD=24*3600e3;
-function deadline(){const t=new Date((pay.at||Date.now())+HOLD);return pad(t.getHours())+":"+pad(t.getMinutes())+" "+pad(t.getDate())+"/"+pad(t.getMonth()+1)}
-function expire(msg){pay=null;store.set("pay",null);$("#payModal").hidden=true;document.body.style.overflow="";showPending();$("#err").textContent=msg;$("#book").scrollIntoView({behavior:"smooth"})}
-function closePay(){$("#payModal").hidden=true;document.body.style.overflow="";showPending()}
-function showPending(){const el=$("#done");if(pay&&pay.step!=="sent"&&pay.at&&Date.now()-pay.at>HOLD){pay=null;store.set("pay",null)}if(!pay){el.hidden=true;return}el.hidden=false;
-  el.innerHTML=pay.step==="sent"
-    ?`<section><div class="pending"><span>${pay.course}: đã báo chuyển khoản, đang chờ Golive Dev đối soát.</span><button type="button" id="reopen">Xem</button></div></section>`
-    :`<section><div class="pending"><span>${pay.course}: đã đăng ký, <b>chờ thanh toán</b> trước ${deadline()} để được tính chỗ.</span><button type="button" id="reopen">Thanh toán</button></div></section>`;
+  startPoll()}
+async function checkPay(){if(!pay||pay.step!=="pay"||!LIVE)return;
+  let r;try{r=await(await fetch(CONFIG.API_URL+"?action=status&id="+encodeURIComponent(pay.id))).json()}catch(e){return}
+  if(!r||!r.ok||!pay)return;
+  if(r.status==="PAID"||r.status==="PAID_HOLD"){pay.step=r.status==="PAID"?"done":"hold";store.set("pay",pay);loadSlots();if(!$("#payModal").hidden)openPay();showPending()}
+  else if(r.status==="CANCELLED"||r.error==="NOT_FOUND")expire("Đăng ký "+pay.id+" đã quá hạn 24 giờ và bị huỷ. Vui lòng chọn lịch để đăng ký lại.")}
+function startPoll(){stopPoll();if(LIVE)poll=setInterval(checkPay,8000)}
+function stopPoll(){if(poll){clearInterval(poll);poll=null}}
+function expire(msg){stopPoll();pay=null;store.set("pay",null);$("#payModal").hidden=true;document.body.style.overflow="";showPending();$("#err").textContent=msg}
+function closePay(){stopPoll();$("#payModal").hidden=true;document.body.style.overflow="";showPending()}
+function showPending(){const el=$("#done");if(pay&&pay.step==="pay"&&pay.at&&Date.now()-pay.at>HOLD){pay=null;store.set("pay",null)}if(!pay){el.hidden=true;return}el.hidden=false;
+  el.innerHTML=pay.step==="pay"
+    ?`<section><div class="pending"><span>${pay.course}: đã lưu đăng ký, <b>chờ chuyển khoản</b> trước ${deadline()}.</span><button type="button" id="reopen">Thanh toán</button></div></section>`
+    :`<section><div class="pending"><span>${pay.course}: ${pay.step==="done"?"<b>đăng ký thành công</b>, email xác nhận đã gửi.":"đã nhận học phí, Golive Dev sẽ liên hệ xếp buổi."}</span><button type="button" id="reopen">Xem</button></div></section>`;
   $("#reopen").onclick=openPay}
+/* Nhập lại SĐT trong 24h → mở lại đăng ký đang chờ chuyển khoản */
+let rsT=null,rsLast="";
+$("#fPhone").addEventListener("input",()=>{clearTimeout(rsT);const ph=$("#fPhone").value.replace(/[\s.]/g,"");
+  if(!LIVE||!/^(0|\+84)\d{9,10}$/.test(ph)||ph===rsLast)return;
+  rsT=setTimeout(async()=>{rsLast=ph;let r;try{r=await(await fetch(CONFIG.API_URL+"?action=resume&phone="+encodeURIComponent(ph))).json()}catch(e){return}
+    if(r&&r.ok&&r.booking){const b=r.booking;pay={id:b.id,memo:b.memo,course:b.course,dates:b.dates,fee:b.fee,email:b.email,at:b.at,step:"pay"};store.set("pay",pay);showPending();openPay()}},700)});
 $("#payClose").onclick=closePay;
 $("#payModal").addEventListener("click",e=>{if(e.target.id==="payModal")closePay()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#payModal").hidden)closePay()});
@@ -474,10 +490,11 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
   btn.disabled=false;btn.textContent="Xác nhận đặt lịch";
   if(!res.ok){$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
   done(data,res)});
-function done(d,res){pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:Date.now()};
+function done(d,res){pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:res.at||Date.now()};
   store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();openPay()}
 if(picks.some((k,i)=>slot(k)!==i||cutoff(k))){picks=[];store.set("picks",picks)}
 $("#demoNote").hidden=LIVE;
 showPending();loadSlots();
+if(pay&&pay.step==="pay")checkPay();
 </script>
 </body></html>
