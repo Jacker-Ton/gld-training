@@ -287,7 +287,7 @@ fill="#17121F" stroke="none">
       <div class="hp" aria-hidden="true"><label for="fWeb">Website<input id="fWeb" name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="err" id="err" role="alert"></p>
       <button class="cta" id="submit" type="submit">Xác nhận đặt lịch</button>
-      <p class="hint">Bấm xác nhận để mở bước thanh toán: quét QR, chuyển 400.000đ với nội dung có sẵn mã khoá và ngày giờ học.</p>
+      <p class="hint">Bấm xác nhận để mở bước thanh toán: quét QR, chuyển 400.000đ với nội dung có sẵn mã khoá học và số điện thoại.</p>
     </form>
   </section>
   <div id="done" hidden></div>
@@ -449,7 +449,7 @@ if(pay&&pay.step==="sent")pay.step="pay";                  // bản cũ: "đã b
 function qrInto(box,memo){box.innerHTML="";
   if(!BANK_OK){box.innerHTML='<span class="hint">Mã QR ngân hàng sẽ hiện tại đây</span>';return}
   if(window.QRCode)new QRCode(box,{text:vietqr(memo),width:400,height:400,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
-function memoLegend(m){const t=m.split(" ");return t.length>=5?`${t[1]} = ${courseLabel(pay.dates[0]).replace(/ \(.*/,"")} · ${t[2].slice(0,2)}/${t[2].slice(2)} = ngày Buổi 1 · ${t[3]} = giờ học · ${t[4]} = 4 số cuối SĐT`:""}
+function memoLegend(m){const t=String(m).split("_");return t.length===2?`${t[0]} = mã khoá học (${courseLabel(pay.dates[0]).replace(/^Khoá \S+ · /,"").replace(/ \(.*/,"")}, tuần ${t[0].slice(1,3)} tháng ${t[0].slice(4,6)}/20${t[0].slice(7,9)}) · ${t[1]} = số điện thoại đăng ký`:""}
 const HOLD=24*3600e3;
 let poll=null;
 function deadline(){const t=new Date((pay.at||Date.now())+HOLD);return pad(t.getHours())+":"+pad(t.getMinutes())+" "+pad(t.getDate())+"/"+pad(t.getMonth()+1)}
@@ -579,7 +579,7 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
   try{
     if(LIVE){const r=await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify(data)});res=await r.json()}
     else{const b=store.get("demoBooked",{});for(const d of data.dates)if((b[d]||0)>=CONFIG.MAX){res={ok:false,error:"FULL",date:d};break}
-      if(!res){res={ok:true,id:"GLD-DEMO",memo:"GLD K"+pad(courseNo(data.dates[0]))+" "+data.dates[0].slice(8,10)+data.dates[0].slice(5,7)+" "+CONFIG.START.slice(0,2)+"H "+data.phone.slice(-4),fee:total,course:courseLabel(data.dates[0]),demo:true}}}
+      if(!res){res={ok:true,id:"GLD-DEMO",memo:courseCode(data.dates[0])+"_"+data.phone.replace(/\D/g,"").replace(/^84(?=\d{9,10}$)/,"0"),fee:total,course:courseLabel(data.dates[0]),demo:true}}}
   }catch(x){res={ok:false,error:"NET"}}
   btn.disabled=false;btn.textContent="Xác nhận đặt lịch";
   if(!res.ok){if(saving){saving=null;$("#payModal").hidden=true;document.body.style.overflow=""}$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
