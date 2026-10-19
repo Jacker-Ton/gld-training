@@ -119,6 +119,26 @@ input[aria-invalid="true"]{border-color:var(--warn);box-shadow:0 0 0 1px var(--w
 .paylist dt{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 .paylist dd{margin:0;word-break:break-word}
 .sess{display:grid;gap:4px;font-size:15px;border:1px solid var(--line);background:var(--card);padding:10px 12px}
+/* nút Chuyển khoản → chọn app ngân hàng (kiểu Zalo) */
+.qrbtns{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:330px;width:100%;margin:-4px auto 0}
+.qrbtns button{font:600 15px var(--f);border:1px solid var(--line);padding:11px 12px;cursor:pointer}
+.btn-bank{background:var(--ink);color:var(--gold3);letter-spacing:.04em}
+.btn-save{background:#fff;color:var(--ink);font-size:13px!important}
+.banks{position:fixed;inset:0;z-index:60;background:rgba(23,18,31,.55);display:flex;align-items:flex-end;justify-content:center}
+@media (min-width:520px){.banks{align-items:center}}
+.banks .sheet{gap:10px}
+.bank-q{font:16px var(--f);width:100%;border:1px solid var(--line);padding:10px 12px;background:#fff}
+.bank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bank{display:grid;justify-items:center;gap:5px;padding:10px 4px 8px;border:1px solid var(--line);background:#fff;cursor:pointer;font:13px/1.25 var(--f);color:var(--ink);text-align:center;position:relative;min-height:104px}
+.bank img{width:44px;height:44px;border-radius:10px;object-fit:cover;background:#eee}
+.bank .tag{position:absolute;top:4px;right:4px;font-size:10px;letter-spacing:.04em;background:var(--ink);color:var(--gold3);padding:1px 5px}
+.bank:active{background:#FFF8E6}
+.bank-note{margin:0;font-size:13px;color:var(--ink2);line-height:1.45}
+/* nhóm Zalo sau khi thanh toán */
+.zalo{border:1px solid var(--line);background:#fff;padding:14px;display:grid;gap:10px;justify-items:center;text-align:center}
+.zalo .qrz{width:180px;height:180px;display:grid;place-items:center}
+.zalo .qrz img,.zalo .qrz canvas{width:180px!important;height:180px!important}
+.zalo a.cta{text-decoration:none;display:block;width:100%}
 .pending{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);background:#FFF8E6;padding:10px 12px;font-size:14.5px}
 .pending button{font:600 13px var(--f);border:1px solid var(--line);background:var(--ink);color:var(--gold3);padding:6px 10px;cursor:pointer;white-space:nowrap}
 .waiting{display:flex;gap:10px;align-items:center;margin:0;font-size:14px;border:1px dashed var(--gold);padding:10px 12px;background:#FFF8E6}
@@ -200,7 +220,7 @@ fill="#17121F" stroke="none">
   <a class="cta" href="#book">Chọn lịch &amp; đăng ký</a>
   <section style="margin-top:26px">
     <div class="facts">
-      <div><b class="gold">T3·T5·T7</b><span>mỗi tuần một khoá mới</span></div>
+      <div><b class="gold">2 lịch</b><span>T2·T4·T6 hoặc T3·T5·T7, mỗi tuần một khoá</span></div>
       <div><b class="gold">10</b><span>học viên tối đa mỗi buổi</span></div>
       <div><b class="gold">0đ</b><span>Buổi 1 miễn phí</span></div>
       <div><b class="gold">400K</b><span>trọn khoá (buổi 2 + 3)</span></div>
@@ -214,15 +234,15 @@ fill="#17121F" stroke="none">
     <article class="ses"><div class="no"><span>1</span></div><div class="body">
       <div class="row"><h3>Giải phẫu một AI Agent</h3><span class="price free">Miễn phí</span></div>
       <ul><li>Bản chất agent: não, hiến chương, kỹ năng, trí nhớ, công cụ, phanh</li><li>Viết hiến chương và tạo agent đầu tiên trên Claude / ChatGPT</li><li>Ba bài thử: đúng phạm vi, thiếu dữ liệu, việc bị cấm</li></ul>
-      <span class="meta">Thứ Ba · 21:00 – 22:30 · Online</span></div></article>
+      <span class="meta">Thứ Hai hoặc Thứ Ba · 21:00 – 22:30 · Online</span></div></article>
     <article class="ses"><div class="no"><span>2</span></div><div class="body">
       <div class="row"><h3>Dựng bộ máy đa Agent</h3><span class="price">Trong học phí</span></div>
       <ul><li>Tổng chỉ huy + agent chuyên trách, phiếu giao việc chuẩn</li><li>Kết nối công cụ qua MCP: Drive, Gmail, Sheets</li><li>Thực hành trong môi trường sandbox riêng của học viên</li></ul>
-      <span class="meta">Thứ Năm · 21:00 – 22:30 · Sandbox environment</span></div></article>
+      <span class="meta">Thứ Tư hoặc Thứ Năm · 21:00 – 22:30 · Sandbox environment</span></div></article>
     <article class="ses"><div class="no"><span>3</span></div><div class="body">
       <div class="row"><h3>Agent hành động thật</h3><span class="price">Trong học phí</span></div>
       <ul><li>Chấm điểm thang 100, cổng người duyệt, quyền Đọc / Đề xuất / Thực thi</li><li>Chạy một quy trình thật của doanh nghiệp từ đầu đến cuối</li><li>Đóng gói Agent Kit mang về, dùng được trên nhiều nền tảng</li></ul>
-      <span class="meta">Thứ Bảy · 21:00 – 22:30 · Sandbox environment</span></div></article>
+      <span class="meta">Thứ Sáu hoặc Thứ Bảy · 21:00 – 22:30 · Sandbox environment</span></div></article>
   </section>
   <section>
     <span class="cap">Người hướng dẫn thực hành</span>
@@ -232,7 +252,7 @@ fill="#17121F" stroke="none">
   <section id="book">
     <span class="cap">Bước 1 · Chọn lịch</span>
     <h2 class="gold">Chọn khoá học trong tháng</h2>
-    <p class="hint">Mỗi tuần một khoá: <b>Thứ Ba</b> Buổi 1 · <b>Thứ Năm</b> Buổi 2 · <b>Thứ Bảy</b> Buổi 3, đều 21:00 – 22:30. Chọn một Thứ Ba để bắt đầu, hệ thống điền sẵn Thứ Năm và Thứ Bảy cùng tuần. Bận buổi nào thì bấm sang Thứ Năm / Thứ Bảy khác trong cùng tháng. Ký hiệu <b>B1·10</b> = Buổi 1, còn 10 chỗ.</p>
+    <p class="hint">Mỗi tuần một khoá (mã dạng <b>K02-10-26</b> = tuần 02 của tháng 10/2026), có 2 lịch, đều 21:00 – 22:30: <b>Thứ Hai · Thứ Tư · Thứ Sáu</b> (từ 26/10/2026) hoặc <b>Thứ Ba · Thứ Năm · Thứ Bảy</b>. Chọn một Thứ Hai hoặc Thứ Ba để bắt đầu, hệ thống điền sẵn 2 buổi sau cùng tuần. Bận buổi nào thì bấm sang ngày cùng lịch ở tuần khác trong cùng tháng. Ký hiệu <b>B1·10</b> = Buổi 1, còn 10 chỗ.</p>
     <div class="cal">
       <div class="cal-h"><strong id="calTitle">Tháng</strong>
         <div class="nav"><button type="button" id="today">Hôm nay</button><button type="button" id="prev" aria-label="Tháng trước">‹</button><button type="button" id="next" aria-label="Tháng sau">›</button></div></div>
@@ -278,7 +298,7 @@ fill="#17121F" stroke="none">
     <svg viewBox="0 0 500 500" width="56" height="56" aria-hidden="true" style="margin-bottom:6px"><use href="#gldLogo"/></svg>
     <b>CÔNG TY CỔ PHẦN CÔNG NGHỆ THỰC HÀNH GOLIVE DEV</b>
     <span>MST 0110510412 · Số 21, ngõ 6 đường Sa Đôi, phường Tây Mỗ, Hà Nội</span>
-    <span>Hotline 0936 355 587 · Phòng học trực tuyến Jitsi Meet</span>
+    <span>Hotline 0974 393 727 · Phòng học trực tuyến Jitsi Meet</span>
   </footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -288,8 +308,11 @@ fill="#17121F" stroke="none">
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbw4h19l8n5botdswrY2aC3H6M98EeIdvoQkOK8VZ8rcFDMOdKusRWl6bMQdFlg4H-T1/exec",  // URL Web App Apps Script
   BANK: { bin: "970422", account: "0974393727", name: "TON BINH TINH", label: "MB Bank" },
-  FIRST_COURSE: "2026-10-13",             // Thứ Ba của Khoá 01
-  DAYS: [2, 4, 6],                        // Buổi 1 = Thứ Ba, Buổi 2 = Thứ Năm, Buổi 3 = Thứ Bảy
+  FIRST_COURSE: "2026-10-13",             // buổi khai giảng sớm nhất
+  TRACKS: [                               // 2 lịch mỗi tuần (BOSS chốt 19/10/2026) — học viên đi trọn 1 lịch
+    { days: [2, 4, 6], from: "2026-10-13", label: "T3 · T5 · T7", names: ["Thứ Ba", "Thứ Năm", "Thứ Bảy"] },
+    { days: [1, 3, 5], from: "2026-10-26", label: "T2 · T4 · T6", names: ["Thứ Hai", "Thứ Tư", "Thứ Sáu"] }
+  ],
   FEES: [0, 200000, 200000],
   MAX: 10,
   START: "21:00", END: "22:30",
@@ -360,15 +383,23 @@ async function loadSlots(){
   else{booked=store.get("demoBooked",{})}
   renderCal()}
 const DAYMS=864e5;
-function courseNo(day){return Math.floor((new Date(day+"T00:00:00")-new Date(CONFIG.FIRST_COURSE+"T00:00:00"))/DAYMS/7)+1}
-function courseLabel(day){const n=courseNo(day),t=new Date(CONFIG.FIRST_COURSE+"T00:00:00");t.setDate(t.getDate()+(n-1)*7);const e=new Date(t);e.setDate(t.getDate()+4);
-  return "Khoá "+pad(n)+" ("+pad(t.getDate())+"/"+pad(t.getMonth()+1)+" – "+pad(e.getDate())+"/"+pad(e.getMonth()+1)+"/"+e.getFullYear()+")"}
+const dow=k=>new Date(k+"T00:00:00").getDay();
+const addD=(k,n)=>{const d=new Date(k+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
+function trackAt(k){const w=dow(k);return CONFIG.TRACKS.find(t=>t.days.includes(w)&&k>=t.from)||null}   // lịch chứa ngày này
+const isB1=k=>{const t=trackAt(k);return !!t&&t.days[0]===dow(k)};
+const mondayOf=k=>addD(k,-((dow(k)+6)%7));
+/* Mã khoá K<tuần>-<tháng>-<năm>: tuần chứa ngày khai giảng đầu tiên của tháng = K01 (đếm lại mỗi tháng) */
+function courseNo(day){const ym=day.slice(0,7);let f="";for(let i=1;i<=31;i++){const k=ym+"-"+pad(i);if(addD(k,0).slice(0,7)!==ym)break;if(isB1(k)){f=k;break}}
+  return f?Math.round((new Date(mondayOf(day)+"T00:00:00")-new Date(mondayOf(f)+"T00:00:00"))/DAYMS/7)+1:0}
+function courseCode(day){return "K"+pad(courseNo(day))+"-"+day.slice(5,7)+"-"+day.slice(2,4)}
+function courseLabel(day){const t=trackAt(day),e=new Date(addD(day,4)+"T00:00:00"),b=new Date(day+"T00:00:00");
+  return "Khoá "+courseCode(day)+(t?" · "+t.label:"")+" ("+pad(b.getDate())+"/"+pad(b.getMonth()+1)+" – "+pad(e.getDate())+"/"+pad(e.getMonth()+1)+"/"+e.getFullYear()+")"}
 const sameMonth=(a,b)=>a.slice(0,7)===b.slice(0,7);
-function slot(k){const d=new Date(k+"T00:00:00").getDay();return CONFIG.DAYS.indexOf(d)}   // 0,1,2 hoặc -1
-function canPick(k){const s=slot(k);if(s<0||k<CONFIG.FIRST_COURSE||cutoff(k))return false;
+function slot(k){const t=trackAt(k);return t?t.days.indexOf(dow(k)):-1}   // 0,1,2 hoặc -1 (Buổi 1/2/3 của lịch chứa ngày đó)
+function canPick(k){const s=slot(k);if(s<0||cutoff(k))return false;
   if((booked[k]||0)>=CONFIG.MAX)return false;
   if(s===0)return true;
-  if(!picks[0]||!sameMonth(k,picks[0]))return false;
+  if(!picks[0]||!sameMonth(k,picks[0])||trackAt(k)!==trackAt(picks[0]))return false;   // đi trọn 1 lịch
   if(s===1)return k>picks[0];
   return k>(picks[1]||picks[0])&&(!!picks[1])}
 function renderCal(){
@@ -376,7 +407,7 @@ function renderCal(){
   $("#calTitle").textContent="Tháng "+(m+1)+" năm "+y;
   const first=new Date(y,m,1),start=new Date(y,m,1-((first.getDay()+6)%7));
   let h="";for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=iso(d);
-    const out=d.getMonth()!==m, s=slot(k), past=cutoff(k)||k<CONFIG.FIRST_COURSE, n=booked[k]||0, left=Math.max(0,CONFIG.MAX-n), full=left===0, idx=picks.indexOf(k);
+    const out=d.getMonth()!==m, s=slot(k), past=cutoff(k), n=booked[k]||0, left=Math.max(0,CONFIG.MAX-n), full=left===0, idx=picks.indexOf(k);
     const ok=idx>=0||canPick(k);
     h+=`<button type="button" data-d="${k}" class="${out?"out ":""}${k===iso(now)?"today ":""}${idx>=0?"sel ":""}${full?"full":""}" ${ok?"":"disabled"} aria-pressed="${idx>=0}" aria-label="${nice(k)}${s>=0&&!past?", Buổi "+(s+1)+", còn "+left+" chỗ":""}">
       <span class="d">${d.getDate()}</span>${s>=0&&!past?`<span class="seat">${full?"Hết":"B"+(s+1)+"·"+left}</span>`:""}${idx>=0?`<span class="tag">B${idx+1}</span>`:""}</button>`}
@@ -386,7 +417,7 @@ function renderCal(){
   renderPicks()}
 function toggle(k){const s=slot(k);if(s<0)return;
   if(picks[s]===k){picks=picks.slice(0,s)}            // bỏ chọn buổi này và các buổi sau
-  else if(s===0){picks=[k];                            // Thứ Ba: điền sẵn T5, T7 cùng tuần nếu còn chỗ và cùng tháng
+  else if(s===0){picks=[k];                            // Buổi 1 (T2 hoặc T3): điền sẵn 2 buổi sau cùng lịch, cùng tuần nếu còn chỗ và cùng tháng
     for(const off of [2,4]){const d=new Date(k+"T00:00:00");d.setDate(d.getDate()+off);const kk=iso(d);if(canPick(kk))picks.push(kk);else break}}
   else if(canPick(k)){picks=picks.slice(0,s);picks[s]=k;
     if(s===1&&picks[2]===undefined){}}
@@ -394,7 +425,7 @@ function toggle(k){const s=slot(k);if(s<0)return;
 function gcal(day,i){const d=day.replace(/-/g,""),s=CONFIG.START.replace(":","")+"00",e=CONFIG.END.replace(":","")+"00";
   return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("GLD · "+CONFIG.COURSE+" · Buổi "+(i+1))+"&dates="+d+"T"+s+"/"+d+"T"+e+"&ctz=Asia/Ho_Chi_Minh&details="+encodeURIComponent("Link phòng học Jitsi gửi trong email xác nhận. Người hướng dẫn: JACK TON")}
 function renderPicks(){
-  const lab=["Thứ Ba","Thứ Năm","Thứ Bảy"];
+  const tr=picks[0]&&trackAt(picks[0]),lab=tr?tr.names:["Thứ Hai hoặc Thứ Ba","",""];
   $("#picks").innerHTML=(picks[0]?`<div class="pick" style="background:var(--ink);color:var(--gold3);grid-template-columns:1fr"><b>${courseLabel(picks[0])}</b></div>`:"")+
   [0,1,2].map(i=>{const k=picks[i];const active=i===picks.length;
     return `<div class="pick ${active?"active":""}"><b>Buổi ${i+1}</b><span>${k?nice(k)+" · 21:00":active?"Chọn một "+lab[i]+" trên lịch…":"—"}</span><span></span></div>`}).join("");renderPay()}
@@ -424,29 +455,83 @@ function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hi
     body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.step==="done"?"Đăng ký thành công":"Đã nhận học phí"}</h3>
     <p>Mã đăng ký <b>${pay.id}</b> · ${pay.course}</p>${sess}
     <p class="hint">${pay.step==="done"
-      ?`Golive Dev đã nhận học phí. Email xác nhận kèm link phòng học Jitsi và file lịch đã gửi tới <b>${esc(pay.email||"email bạn đăng ký")}</b>. Không thấy trong Hộp thư đến thì kiểm tra mục Spam/Quảng cáo.`
+      ?`Golive Dev đã nhận học phí. Email xác nhận kèm mã QR nhóm Zalo, link phòng học và file lịch đã gửi tới <b>${esc(pay.email||"email bạn đăng ký")}</b>. Không thấy trong Hộp thư đến thì kiểm tra mục Spam/Quảng cáo.`
       :`Golive Dev đã nhận học phí, nhưng buổi bạn chọn vừa đủ ${CONFIG.MAX} học viên. Golive Dev sẽ liên hệ trong ngày để xếp buổi phù hợp.`}</p>
+    ${pay.step==="done"?zaloBox():""}
     ${pay.step==="done"?`<div class="sess">${pay.dates.map((k,i)=>`<a href="${gcal(k,i)}" target="_blank" rel="noopener" style="color:var(--gold)">Thêm Buổi ${i+1} vào Google Calendar</a>`).join("")}</div>`:""}
     <button type="button" class="cta" id="payDone">Hoàn tất</button>`;
-    $("#payDone").onclick=closePay;return}
+    $("#payDone").onclick=closePay;
+    if(pay.step==="done"){if(pay.zalo)qrZalo();else if(LIVE)loadZalo()}
+    return}
   body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.course}</h3>${sess}
   <div class="qrbig" id="qrBig"></div>
+  <div class="qrbtns"><button type="button" class="btn-bank" id="btnBank">Chuyển khoản</button><button type="button" class="btn-save" id="btnSaveQr">Lưu ảnh QR</button></div>
   <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(pay.fee)}</dd>
     <dt>Nội dung</dt><dd><b id="memo">${pay.memo}</b> <button type="button" class="copy" id="cpMemo">Chép</button></dd>
     <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
   <p class="hint">${memoLegend(pay.memo)}</p>
-  <p class="hint">Quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
+  <p class="hint">Bấm <b>Chuyển khoản</b> để chọn app ngân hàng trên điện thoại, hoặc quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
   <p class="waiting" id="payWait" role="status"><span class="dot"></span>Đang chờ tiền về — trang sẽ tự xác nhận ngay khi nhận được chuyển khoản (thường dưới 1 phút).</p>
   <button type="button" class="cta ghost" id="payLater" style="padding:12px;font-size:13px">Lưu lại, chuyển khoản đăng ký sau</button>
   <p class="hint" style="text-align:center;margin:0">Trong 24 giờ, nhập lại đúng số điện thoại và email đã đăng ký để mở lại bước thanh toán này.</p>`;
   qrInto($("#qrBig"),pay.memo);
   $("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText(pay.memo);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
   $("#payLater").onclick=closePay;
+  $("#btnBank").onclick=openBanks;
+  $("#btnSaveQr").onclick=saveQr;
   startPoll()}
+/* ============ Chuyển khoản qua app ngân hàng (deeplink VietQR, giống nút "Chuyển khoản" cạnh QR trong Zalo) ============
+   Danh sách app + deeplink chính thức: https://www.vietqr.io/danh-sach-api/deeplink-app-ngan-hang
+   App có autofill=1 mở sẵn số tiền + nội dung; app khác chỉ mở app → khách dán nội dung đã chép hoặc quét ảnh QR đã lưu. */
+const OS=/Android/i.test(navigator.userAgent)?"android":(/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1))?"ios":"android";
+const MOBILE=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const BANK_CODE="mb";                                      // mã ngân hàng nhận theo VietQR (MB Bank)
+const BANK_APPS_FALLBACK=[["mb","MB Bank",1],["icb","VietinBank iPay",1],["bidv","BIDV SmartBanking",1],["acb","ACB ONE",1],["ocb","OCB OMNI",1],
+  ["vcb","Vietcombank",0],["tcb","Techcombank",0],["vpb","VPBank NEO",0],["tpb","TPBank",0],["vba","Agribank",0],["shb","SHB",0],["hdb","HDBank",0],
+  ["vib-2","MyVIB",0],["lpb","LPBank",0],["seab","SeABank",0],["scb","Sacombank",0],["eib","Eximbank",0],["cake","Cake",0],["timo","Timo",0]]
+  .map(([appId,appName,autofill])=>({appId,appName,autofill,appLogo:`https://cdn.vietqr.io/bank-app-icon/${appId}-${OS}.webp`}));
+let bankApps=null;
+async function loadBankApps(){if(bankApps)return bankApps;
+  try{const r=await(await fetch(`https://api.vietqr.io/v2/${OS}-app-deeplinks`)).json();if(r&&Array.isArray(r.apps)&&r.apps.length)bankApps=r.apps}catch(e){}
+  if(!bankApps)bankApps=BANK_APPS_FALLBACK;
+  const seen={};bankApps=bankApps.filter(a=>!seen[a.appName]&&(seen[a.appName]=1)).sort((a,b)=>(b.autofill-a.autofill)||((b.monthlyInstall||0)-(a.monthlyInstall||0)));return bankApps}
+function bankLink(appId){const back=location.origin+location.pathname+"?tt="+encodeURIComponent(pay.id);
+  return "https://dl.vietqr.io/pay?app="+encodeURIComponent(appId)+"&ba="+CONFIG.BANK.account+"@"+BANK_CODE+"&am="+pay.fee+
+    "&tn="+encodeURIComponent(pay.memo).replace(/%20/g,"+")+"&bn="+encodeURIComponent(CONFIG.BANK.name).replace(/%20/g,"+")+"&url="+encodeURIComponent(back)}
+async function copyMemo(){try{await navigator.clipboard.writeText(pay.memo);return true}catch(e){return false}}
+async function openBanks(){if(!pay)return;closeBanks();
+  const w=document.createElement("div");w.className="banks";w.id="bankSheet";w.setAttribute("role","dialog");w.setAttribute("aria-modal","true");w.setAttribute("aria-labelledby","bankTitle");
+  w.innerHTML=`<div class="sheet"><div class="sheet-h"><span class="cap" id="bankTitle">Chọn app ngân hàng</span><button type="button" class="x" id="bankClose" aria-label="Đóng">×</button></div>
+    <p class="bank-note">Chuyển <b>${vnd(pay.fee)}</b> tới ${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}, nội dung <b>${esc(pay.memo)}</b> (đã tự chép sẵn khi bạn chọn app).</p>
+    ${MOBILE?"":`<p class="bank-note" style="color:var(--warn)">Nút này mở app ngân hàng trên <b>điện thoại</b>. Đang dùng máy tính: hãy quét mã QR bằng điện thoại.</p>`}
+    <input class="bank-q" id="bankQ" type="search" placeholder="Tìm ngân hàng (VD: MB, Vietcombank…)" autocomplete="off" aria-label="Tìm ngân hàng">
+    <div class="bank-grid" id="bankGrid"><p class="bank-note">Đang tải danh sách ngân hàng…</p></div>
+    <p class="bank-note">Nhãn <b>Tự điền</b>: app mở sẵn số tiền và nội dung. App khác: app mở ra, bạn chọn <b>Chuyển tiền</b> rồi dán nội dung đã chép, hoặc chọn <b>Quét QR → ảnh</b> và chọn ảnh QR đã lưu. Máy chưa cài app đã chọn: trang sẽ báo chưa mở được, bạn chọn app khác hoặc quét mã QR.</p></div>`;
+  document.body.appendChild(w);
+  w.addEventListener("click",e=>{if(e.target===w)closeBanks()});$("#bankClose").onclick=closeBanks;
+  const apps=await loadBankApps();if(!$("#bankSheet"))return;
+  const draw=q=>{const k=q.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+    const list=apps.filter(a=>!k||(a.appName+" "+(a.bankName||"")+" "+a.appId).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").includes(k));
+    $("#bankGrid").innerHTML=list.length?list.map(a=>`<button type="button" class="bank" data-app="${esc(a.appId)}">${a.autofill?'<span class="tag">Tự điền</span>':""}<img src="${esc(a.appLogo)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>${esc(a.appName)}</span></button>`).join(""):`<p class="bank-note">Không tìm thấy ngân hàng phù hợp.</p>`};
+  draw("");$("#bankQ").oninput=e=>draw(e.target.value);
+  $("#bankGrid").onclick=async e=>{const b=e.target.closest(".bank");if(!b)return;await copyMemo();location.href=bankLink(b.dataset.app)}}
+function closeBanks(){const w=$("#bankSheet");if(w)w.remove()}
+function saveQr(){const c=$("#qrBig canvas"),im=$("#qrBig img");const src=c?c.toDataURL("image/png"):(im&&im.src);if(!src)return;
+  const a=document.createElement("a");a.href=src;a.download="AC-GLD-QR-"+pay.memo.replace(/\s+/g,"-")+".png";document.body.appendChild(a);a.click();a.remove();
+  $("#btnSaveQr").textContent="Đã lưu"}
+/* ============ Nhóm Zalo khoá học (hiện sau khi thanh toán xong) ============ */
+function zaloBox(){return `<div class="zalo" id="zaloBox"><span class="cap">Bước cuối · Vào nhóm Zalo khoá học</span>
+  ${pay.zalo?`<div class="qrz" id="qrZalo"></div><p class="hint" style="margin:0">Link phòng học trực tuyến của từng buổi được gửi trong nhóm Zalo. Đang dùng điện thoại: bấm nút bên dưới. Đang dùng máy tính: mở Zalo trên điện thoại → Quét mã QR.</p>
+  <a class="cta" href="${esc(pay.zalo)}" target="_blank" rel="noopener">Vào nhóm Zalo</a>`
+  :`<p class="hint" style="margin:0" id="zaloWait">${LIVE?"Đang tải mã QR nhóm Zalo…":"Mã QR nhóm Zalo của khoá sẽ hiện tại đây."}</p>`}</div>`}
+function qrZalo(){const b=$("#qrZalo");if(!b||!window.QRCode)return;b.innerHTML="";new QRCode(b,{text:pay.zalo,width:360,height:360,colorDark:"#17121F",colorLight:"#FFFFFF",correctLevel:QRCode.CorrectLevel.M})}
+async function loadZalo(){let r;try{r=await(await fetch(CONFIG.API_URL+"?action=status&id="+encodeURIComponent(pay.id))).json()}catch(e){r=null}
+  if(r&&r.ok&&r.zalo&&pay){pay.zalo=r.zalo;store.set("pay",pay);const z=$("#zaloBox");if(z){z.outerHTML=zaloBox();qrZalo()}}
+  else{const w=$("#zaloWait");if(w)w.textContent="Golive Dev sẽ gửi link nhóm Zalo của khoá cho bạn trước buổi học. Cần gấp: gọi hotline 0974 393 727."}}
 async function checkPay(){if(!pay||pay.step!=="pay"||!LIVE)return;
   let r;try{r=await(await fetch(CONFIG.API_URL+"?action=status&id="+encodeURIComponent(pay.id))).json()}catch(e){return}
   if(!r||!r.ok||!pay)return;
-  if(r.status==="PAID"||r.status==="PAID_HOLD"){pay.step=r.status==="PAID"?"done":"hold";store.set("pay",pay);loadSlots();if(!$("#payModal").hidden)openPay();showPending()}
+  if(r.status==="PAID"||r.status==="PAID_HOLD"){pay.step=r.status==="PAID"?"done":"hold";if(r.zalo)pay.zalo=r.zalo;closeBanks();store.set("pay",pay);loadSlots();if(!$("#payModal").hidden)openPay();showPending()}
   else if(r.status==="CANCELLED"||r.error==="NOT_FOUND")expire("Đăng ký "+pay.id+" đã quá hạn 24 giờ và bị huỷ. Vui lòng chọn lịch để đăng ký lại.")}
 function startPoll(){stopPoll();if(LIVE)poll=setInterval(checkPay,8000)}
 function stopPoll(){if(poll){clearInterval(poll);poll=null}}
@@ -466,7 +551,9 @@ function tryResume(){clearTimeout(rsT);const ph=$("#fPhone").value.replace(/[\s.
 $("#fPhone").addEventListener("input",tryResume);$("#fEmail").addEventListener("input",tryResume);
 $("#payClose").onclick=closePay;
 $("#payModal").addEventListener("click",e=>{if(e.target.id==="payModal")closePay()});
-addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#payModal").hidden)closePay()});
+addEventListener("keydown",e=>{if(e.key!=="Escape")return;if($("#bankSheet"))closeBanks();else if(!$("#payModal").hidden)closePay()});
+/* Quay lại từ app ngân hàng → hỏi máy chủ ngay, không chờ 8 giây */
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&pay&&pay.step==="pay")checkPay()});
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 /* ============ Đăng ký ============ */
 const fields=["fName","fPhone","fEmail","fCompany"];
@@ -476,7 +563,7 @@ function check(){const v=id=>$("#"+id).value.trim();const bad=[];
   if(!/^(0|\+84)\d{9,10}$/.test(v("fPhone").replace(/[\s.]/g,"")))bad.push(["fPhone","Số điện thoại chưa đúng (10 số, bắt đầu bằng 0)."]);
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("fEmail")))bad.push(["fEmail","Email chưa đúng định dạng."]);
   bad.forEach(([id])=>$("#"+id).setAttribute("aria-invalid","true"));
-  if(picks.length<3)return "Hãy chọn đủ 3 buổi: Thứ Ba, Thứ Năm, Thứ Bảy trong cùng tháng.";
+  if(picks.length<3)return "Hãy chọn đủ 3 buổi cùng một lịch (T2 · T4 · T6 hoặc T3 · T5 · T7) trong cùng tháng.";
   return bad.length?bad[0][1]:""}
 $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=check();$("#err").textContent=msg;
   if(msg){if(picks.length<3)$("#book").scrollIntoView({behavior:"smooth"});return}
@@ -493,9 +580,11 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
   done(data,res)});
 function done(d,res){pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:res.at||Date.now()};
   store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();openPay()}
-if(picks.some((k,i)=>slot(k)!==i||cutoff(k))){picks=[];store.set("picks",picks)}
+if(picks.some((k,i)=>slot(k)!==i||cutoff(k)||trackAt(k)!==trackAt(picks[0]))){picks=[];store.set("picks",picks)}
 $("#demoNote").hidden=LIVE;
 showPending();loadSlots();
 if(pay&&pay.step==="pay")checkPay();
+/* App ngân hàng trả về ?tt=<mã đăng ký> sau khi chuyển khoản → mở lại popup để thấy kết quả */
+(()=>{const q=new URLSearchParams(location.search),t=q.get("tt");if(!t)return;history.replaceState(null,"",location.pathname+location.hash);if(pay&&pay.id===t)openPay()})();
 </script>
 </body></html>
