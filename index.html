@@ -473,14 +473,15 @@ function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hi
   <p class="qrnote">${QR_NOTE}</p>
   <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(pay.fee)}</dd>
     <dt>Nội dung</dt><dd><b id="memo">${pay.memo}</b> <button type="button" class="copy" id="cpMemo">Chép</button></dd>
-    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
+    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · <b id="acc">${CONFIG.BANK.account}</b> <button type="button" class="copy" id="cpAcc">Sao chép</button><br>${CONFIG.BANK.name}</dd></dl>
   <p class="hint">${memoLegend(pay.memo)}</p>
   <p class="hint">Bấm <b>Chuyển khoản</b> để chọn app ngân hàng trên điện thoại, hoặc quét mã bằng app ngân hàng: số tiền và nội dung đã điền sẵn, vui lòng giữ nguyên nội dung. Chỗ học chỉ được tính khi tiền về tài khoản; vui lòng chuyển khoản trước <b>${deadline()}</b>, quá hạn đăng ký tự huỷ.</p>
   <p class="waiting" id="payWait" role="status"><span class="dot"></span>Đang chờ tiền về — trang sẽ tự xác nhận ngay khi nhận được chuyển khoản (thường dưới 1 phút).</p>
   <button type="button" class="cta ghost" id="payLater" style="padding:12px;font-size:13px">Lưu lại, chuyển khoản đăng ký sau</button>
   <p class="hint" style="text-align:center;margin:0">Trong 24 giờ, nhập lại đúng số điện thoại và email đã đăng ký để mở lại bước thanh toán này.</p>`;
   qrInto($("#qrBig"),pay.memo);
-  $("#cpMemo").onclick=async()=>{try{await navigator.clipboard.writeText(pay.memo);$("#cpMemo").textContent="Đã chép"}catch(e){const r=document.createRange();r.selectNodeContents($("#memo"));getSelection().removeAllRanges();getSelection().addRange(r)}};
+  $("#cpMemo").onclick=()=>copyText(pay.memo,$("#cpMemo"),"Đã chép");
+  $("#cpAcc").onclick=()=>copyText(CONFIG.BANK.account,$("#cpAcc"),"Đã chép");
   $("#payLater").onclick=closePay;
   $("#btnBank").onclick=openBanks;
   $("#btnSaveQr").onclick=saveQr;
@@ -561,6 +562,12 @@ function qrZalo(){const b=$("#qrZalo");if(!b||!window.QRCode)return;b.innerHTML=
 async function loadZalo(){let r;try{r=await(await fetch(CONFIG.API_URL+"?action=status&id="+encodeURIComponent(pay.id))).json()}catch(e){r=null}
   if(r&&r.ok&&r.zalo&&pay){pay.zalo=r.zalo;store.set("pay",pay);const z=$("#zaloBox");if(z){z.outerHTML=zaloBox();qrZalo()}}
   else{const w=$("#zaloWait");if(w)w.textContent="Golive Dev sẽ gửi link nhóm Zalo của khoá cho bạn trước buổi học. Cần gấp: gọi hotline 0974 393 727."}}
+/* Chép vào bộ nhớ tạm — trình duyệt trong Zalo có lúc chặn clipboard API → dùng ô ẩn + execCommand */
+async function copyText(t,btn,ok){let done=false;
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);done=true}}catch(e){}
+  if(!done){const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px";
+    document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);try{done=document.execCommand("copy")}catch(e){}a.remove()}
+  btn.textContent=done?ok:"Nhấn giữ để chép";if(done)setTimeout(()=>{if(btn.isConnected)btn.textContent=btn.id==="cpAcc"?"Sao chép":"Chép"},2500)}
 async function checkPay(){if(!pay||pay.step!=="pay"||!LIVE)return;
   let r;try{r=await(await fetch(CONFIG.API_URL+"?action=status&id="+encodeURIComponent(pay.id))).json()}catch(e){return}
   if(!r||!r.ok||!pay)return;
@@ -622,7 +629,7 @@ function openSaving(d){saving={dates:d.dates.slice()};const m=$("#payModal");m.h
   <div class="qrbtns"><button type="button" class="btn-bank" disabled>Chuyển khoản</button><button type="button" class="btn-save" disabled>Lưu ảnh QR</button></div>
   <p class="qrnote">${QR_NOTE}</p>
   <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(total)}</dd>
-    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
+    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account}<br>${CONFIG.BANK.name}</dd></dl>
   <p class="waiting" role="status"><span class="dot"></span>Đang lưu đăng ký và giữ chỗ — vui lòng chờ vài giây, chưa chuyển khoản lúc này.</p>`}
 function done(d,res){const shown=!!saving&&!$("#payModal").hidden;saving=null;pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:res.at||Date.now()};
   store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();if(shown||!LIVE)openPay();else showPending()}
