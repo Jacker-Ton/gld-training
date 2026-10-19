@@ -521,9 +521,37 @@ async function openBanks(){if(!pay)return;closeBanks();
   draw("");$("#bankQ").oninput=e=>draw(e.target.value);
   $("#bankGrid").onclick=async e=>{const b=e.target.closest(".bank");if(!b)return;await copyMemo();location.href=bankLink(b.dataset.app)}}
 function closeBanks(){const w=$("#bankSheet");if(w)w.remove()}
-function saveQr(){const c=$("#qrBig canvas"),im=$("#qrBig img");const src=c?c.toDataURL("image/png"):(im&&im.src);if(!src)return;
-  const a=document.createElement("a");a.href=src;a.download="AC-GLD-QR-"+pay.memo.replace(/\s+/g,"-")+".png";document.body.appendChild(a);a.click();a.remove();
-  $("#btnSaveQr").textContent="Đã lưu"}
+/* Lưu ảnh QR — trình duyệt trong Zalo/Facebook không tải được file (báo "Không tìm thấy ứng dụng"):
+   iPhone → bảng chia sẻ của máy ("Lưu hình ảnh" → Thư viện ảnh); không có bảng chia sẻ → mở ảnh lớn để nhấn giữ → Lưu ảnh;
+   Android ngoài Zalo → tải ảnh về máy. Trang web không được tự ghi vào Thư viện ảnh khi khách chưa bấm chọn. */
+const INAPP=/Zalo|FBAN|FBAV|FB_IAB|Instagram|Line\/|TikTok|musical_ly/i.test(navigator.userAgent);
+function qrCard(){const src=$("#qrBig canvas")||$("#qrBig img");if(!src)return null;
+  const W=640,H=820,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  g.fillStyle="#fff";g.fillRect(0,0,W,H);g.imageSmoothingEnabled=false;g.drawImage(src,70,40,500,500);
+  g.fillStyle="#17121F";g.textAlign="center";g.font="bold 34px 'Times New Roman',serif";g.fillText(vnd(pay.fee),W/2,600);
+  g.font="bold 30px 'Times New Roman',serif";g.fillText(pay.memo,W/2,650);
+  g.font="24px 'Times New Roman',serif";g.fillText(CONFIG.BANK.label+" · "+CONFIG.BANK.account+" · "+CONFIG.BANK.name,W/2,700);
+  g.fillStyle="#7A5A14";g.font="italic 22px 'Times New Roman',serif";g.fillText("Golive Dev · "+CONFIG.COURSE,W/2,750);return c}
+const qrName=()=>"AC-GLD-QR-"+String(pay.memo).replace(/[^\w-]+/g,"_")+".png";
+async function saveQr(){const c=qrCard();if(!c)return;const btn=$("#btnSaveQr");
+  const blob=await new Promise(r=>c.toBlob(r,"image/png"));const file=blob&&new File([blob],qrName(),{type:"image/png"});
+  // iPhone (Safari, Chrome, trong Zalo nếu hỗ trợ): bảng chia sẻ → "Lưu hình ảnh"
+  if(file&&OS==="ios"&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:"Mã QR chuyển khoản"});btn.textContent="Lưu ảnh QR";return}
+    catch(e){if(e&&e.name==="AbortError")return}}
+  // Android ngoài app chat: tải thẳng về máy (thư mục Tải xuống, hiện trong Thư viện/Ảnh)
+  if(blob&&OS==="android"&&!INAPP&&MOBILE){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=qrName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);btn.textContent="Đã tải về máy";return}
+  // Máy tính: tải file
+  if(blob&&!MOBILE){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=qrName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);btn.textContent="Đã tải về máy";return}
+  openQrSheet(c.toDataURL("image/png"))}
+function openQrSheet(src){closeQrSheet();const w=document.createElement("div");w.className="banks";w.id="qrSheet";w.setAttribute("role","dialog");w.setAttribute("aria-modal","true");
+  const andr=OS==="android"&&INAPP,url=location.origin+location.pathname;
+  w.innerHTML=`<div class="sheet"><div class="sheet-h"><span class="cap">Lưu mã QR vào máy</span><button type="button" class="x" id="qrSheetX" aria-label="Đóng">×</button></div>
+    <p class="bank-note"><b>Nhấn giữ vào ảnh bên dưới</b> rồi chọn <b>${OS==="ios"?"Lưu vào Ảnh / Lưu hình ảnh":"Tải hình ảnh xuống / Lưu ảnh"}</b>. Ảnh sẽ nằm trong Thư viện ảnh để quét bằng app ngân hàng (chọn Quét QR → Chọn ảnh).</p>
+    <img src="${src}" alt="Mã QR chuyển khoản ${esc(pay.memo)}" style="width:100%;max-width:320px;margin:0 auto;display:block;border:1px solid var(--line);-webkit-touch-callout:default;user-select:auto">
+    ${andr?`<a class="cta ghost" style="font-size:13px;padding:12px" href="intent://${url.replace(/^https?:\/\//,"")}#Intent;scheme=https;package=com.android.chrome;end">Không lưu được? Mở bằng Chrome</a><p class="bank-note" style="text-align:center">Mở bằng Chrome xong, nhập lại đúng SĐT + email đã đăng ký để mở lại bước thanh toán.</p>`:""}</div>`;
+  document.body.appendChild(w);w.addEventListener("click",e=>{if(e.target===w)closeQrSheet()});$("#qrSheetX").onclick=closeQrSheet}
+function closeQrSheet(){const w=$("#qrSheet");if(w)w.remove()}
 /* ============ Nhóm Zalo khoá học (hiện sau khi thanh toán xong) ============ */
 function zaloBox(){return `<div class="zalo" id="zaloBox"><span class="cap">Bước cuối · Vào nhóm Zalo khoá học</span>
   ${pay.zalo?`<div class="qrz" id="qrZalo"></div><p class="hint" style="margin:0">Link phòng học trực tuyến của từng buổi được gửi trong nhóm Zalo. Đang dùng điện thoại: bấm nút bên dưới. Đang dùng máy tính: mở Zalo trên điện thoại → Quét mã QR.</p>
@@ -556,7 +584,7 @@ function tryResume(){clearTimeout(rsT);const ph=$("#fPhone").value.replace(/[\s.
 $("#fPhone").addEventListener("input",tryResume);$("#fEmail").addEventListener("input",tryResume);
 $("#payClose").onclick=closePay;
 $("#payModal").addEventListener("click",e=>{if(e.target.id==="payModal")closePay()});
-addEventListener("keydown",e=>{if(e.key!=="Escape")return;if($("#bankSheet"))closeBanks();else if(!$("#payModal").hidden)closePay()});
+addEventListener("keydown",e=>{if(e.key!=="Escape")return;if($("#qrSheet"))closeQrSheet();else if($("#bankSheet"))closeBanks();else if(!$("#payModal").hidden)closePay()});
 /* Quay lại từ app ngân hàng → hỏi máy chủ ngay, không chờ 8 giây */
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&pay&&pay.step==="pay")checkPay()});
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
