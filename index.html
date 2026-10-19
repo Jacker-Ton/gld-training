@@ -124,6 +124,10 @@ input[aria-invalid="true"]{border-color:var(--warn);box-shadow:0 0 0 1px var(--w
 .qrbtns button{font:600 15px var(--f);border:1px solid var(--line);padding:11px 12px;cursor:pointer}
 .btn-bank{background:var(--ink);color:var(--gold3);letter-spacing:.04em}
 .btn-save{background:#fff;color:var(--ink);font-size:13px!important}
+.qrbtns button:disabled{opacity:.35;cursor:wait}
+.qrnote{margin:-6px auto 0;max-width:330px;text-align:center;font-size:13px;line-height:1.4;color:var(--gold);font-style:italic}
+.qrwait{display:grid;place-items:center;gap:10px;text-align:center;font-size:13.5px;color:var(--ink2);padding:10px}
+.qrwait .dot{width:14px;height:14px}
 .banks{position:fixed;inset:0;z-index:60;background:rgba(23,18,31,.55);display:flex;align-items:flex-end;justify-content:center}
 @media (min-width:520px){.banks{align-items:center}}
 .banks .sheet{gap:10px}
@@ -466,6 +470,7 @@ function openPay(){if(!pay)return;const m=$("#payModal"),body=$("#payBody");m.hi
   body.innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${pay.course}</h3>${sess}
   <div class="qrbig" id="qrBig"></div>
   <div class="qrbtns"><button type="button" class="btn-bank" id="btnBank">Chuyển khoản</button><button type="button" class="btn-save" id="btnSaveQr">Lưu ảnh QR</button></div>
+  <p class="qrnote">${QR_NOTE}</p>
   <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(pay.fee)}</dd>
     <dt>Nội dung</dt><dd><b id="memo">${pay.memo}</b> <button type="button" class="copy" id="cpMemo">Chép</button></dd>
     <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
@@ -536,7 +541,7 @@ async function checkPay(){if(!pay||pay.step!=="pay"||!LIVE)return;
 function startPoll(){stopPoll();if(LIVE)poll=setInterval(checkPay,8000)}
 function stopPoll(){if(poll){clearInterval(poll);poll=null}}
 function expire(msg){stopPoll();pay=null;store.set("pay",null);$("#payModal").hidden=true;document.body.style.overflow="";showPending();$("#err").textContent=msg}
-function closePay(){stopPoll();$("#payModal").hidden=true;document.body.style.overflow="";showPending()}
+function closePay(){stopPoll();saving=null;$("#payModal").hidden=true;document.body.style.overflow="";showPending()}
 function showPending(){const el=$("#done");if(pay&&pay.step==="pay"&&pay.at&&Date.now()-pay.at>HOLD){pay=null;store.set("pay",null)}if(!pay){el.hidden=true;return}el.hidden=false;
   el.innerHTML=pay.step==="pay"
     ?`<section><div class="pending"><span>${pay.course}: đã lưu đăng ký, <b>chờ chuyển khoản</b> trước ${deadline()}.</span><button type="button" id="reopen">Thanh toán</button></div></section>`
@@ -569,6 +574,7 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
   if(msg){if(picks.length<3)$("#book").scrollIntoView({behavior:"smooth"});return}
   const btn=$("#submit");btn.disabled=true;btn.textContent="Đang gửi…";
   const data={name:$("#fName").value.trim(),phone:$("#fPhone").value.replace(/[\s.]/g,""),email:$("#fEmail").value.trim(),company:$("#fCompany").value.trim(),dates:picks.slice(),website:$("#fWeb").value};
+  openSaving(data);                                         // popup hiện ngay; QR + nút Chuyển khoản mở khi máy chủ lưu xong (BOSS chốt 19/10/2026)
   let res;
   try{
     if(LIVE){const r=await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify(data)});res=await r.json()}
@@ -576,10 +582,22 @@ $("#form").addEventListener("submit",async e=>{e.preventDefault();const msg=chec
       if(!res){res={ok:true,id:"GLD-DEMO",memo:"GLD K"+pad(courseNo(data.dates[0]))+" "+data.dates[0].slice(8,10)+data.dates[0].slice(5,7)+" "+CONFIG.START.slice(0,2)+"H "+data.phone.slice(-4),fee:total,course:courseLabel(data.dates[0]),demo:true}}}
   }catch(x){res={ok:false,error:"NET"}}
   btn.disabled=false;btn.textContent="Xác nhận đặt lịch";
-  if(!res.ok){$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
+  if(!res.ok){if(saving){saving=null;$("#payModal").hidden=true;document.body.style.overflow=""}$("#err").textContent=res.error==="FULL"?"Tối "+nice(res.date)+" vừa hết chỗ. Vui lòng chọn ngày khác.":res.error==="NET"?"Chưa gửi được do mất kết nối. Kiểm tra mạng rồi bấm lại.":"Thông tin chưa hợp lệ, vui lòng kiểm tra lại.";if(res.error==="FULL")loadSlots();return}
   done(data,res)});
-function done(d,res){pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:res.at||Date.now()};
-  store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();openPay()}
+const QR_NOTE="(Quý khách nên lưu mã QR trước khi chuyển khoản, để sử dụng đối với bank không tự động trong hệ thống)";
+/* Bước "đang giữ chỗ": mở popup ngay khi bấm gửi, chưa cho quét QR tới khi đăng ký đã vào Sheet */
+let saving=null;
+function openSaving(d){saving={dates:d.dates.slice()};const m=$("#payModal");m.hidden=false;document.body.style.overflow="hidden";
+  $("#payBody").innerHTML=`<h3 class="gold" id="payTitle" style="font-size:24px">${courseLabel(d.dates[0])}</h3>
+  <div class="sess">${d.dates.map((k,i)=>`<span><b>Buổi ${i+1}</b> · ${nice(k)} · ${CONFIG.START}–${CONFIG.END}</span>`).join("")}</div>
+  <div class="qrbig"><div class="qrwait"><span class="dot"></span>Đang giữ chỗ…<br>mã QR hiện sau vài giây</div></div>
+  <div class="qrbtns"><button type="button" class="btn-bank" disabled>Chuyển khoản</button><button type="button" class="btn-save" disabled>Lưu ảnh QR</button></div>
+  <p class="qrnote">${QR_NOTE}</p>
+  <dl class="paylist"><dt>Số tiền</dt><dd class="amount gold">${vnd(total)}</dd>
+    <dt>Tài khoản</dt><dd>${CONFIG.BANK.label} · ${CONFIG.BANK.account} · ${CONFIG.BANK.name}</dd></dl>
+  <p class="waiting" role="status"><span class="dot"></span>Đang lưu đăng ký và giữ chỗ — vui lòng chờ vài giây, chưa chuyển khoản lúc này.</p>`}
+function done(d,res){const shown=!!saving&&!$("#payModal").hidden;saving=null;pay={id:res.id,memo:res.memo,course:res.course||courseLabel(d.dates[0]),dates:d.dates.slice(),fee:res.fee||total,name:d.name,email:d.email,step:"pay",at:res.at||Date.now()};
+  store.set("pay",pay);picks=[];store.set("picks",picks);loadSlots();if(shown||!LIVE)openPay();else showPending()}
 if(picks.some((k,i)=>slot(k)!==i||cutoff(k)||trackAt(k)!==trackAt(picks[0]))){picks=[];store.set("picks",picks)}
 $("#demoNote").hidden=LIVE;
 showPending();loadSlots();
